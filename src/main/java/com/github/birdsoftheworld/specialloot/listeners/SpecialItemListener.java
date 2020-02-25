@@ -1,6 +1,6 @@
 package com.github.birdsoftheworld.specialloot.listeners;
 
-import com.github.birdsoftheworld.specialloot.enums.Specials;
+import com.github.birdsoftheworld.specialloot.enums.Specialties;
 import com.github.birdsoftheworld.specialloot.util.SpecialItems;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -25,8 +25,8 @@ public class SpecialItemListener implements Listener {
         ItemStack item = event.getItem();
 
         if (item != null) {
-            List<Specials> specials = SpecialItems.getSpecials(item, plugin);
-            for(Specials special : specials) {
+            List<Specialties> specialties = SpecialItems.getSpecialties(item, plugin);
+            for(Specialties special : specialties) {
                 player.sendMessage(special.name());
             }
         }

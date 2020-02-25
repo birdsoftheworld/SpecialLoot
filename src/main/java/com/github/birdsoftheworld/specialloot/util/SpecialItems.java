@@ -1,6 +1,6 @@
 package com.github.birdsoftheworld.specialloot.util;
 
-import com.github.birdsoftheworld.specialloot.enums.Specials;
+import com.github.birdsoftheworld.specialloot.enums.Specialties;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SpecialItems {
-    public static ItemStack createSpecial(ItemStack item, Plugin plugin, Specials special, boolean enabled) {
+    public static ItemStack setSpecialty(ItemStack item, Plugin plugin, Specialties special, boolean enabled) {
         ItemMeta meta = item.getItemMeta();
 
         assert meta != null;
@@ -31,22 +31,22 @@ public class SpecialItems {
         return item;
     }
 
-    public static List<Specials> getSpecials(ItemStack item, Plugin plugin) {
+    public static List<Specialties> getSpecialties(ItemStack item, Plugin plugin) {
         ItemMeta meta = item.getItemMeta();
 
         assert meta != null;
         PersistentDataContainer container = meta.getPersistentDataContainer();
 
-        List<Specials> specialsList = new ArrayList<>();
+        List<Specialties> specialtiesList = new ArrayList<>();
 
-        for(Specials special : Specials.values()) {
+        for(Specialties special : Specialties.values()) {
             NamespacedKey key = new NamespacedKey(plugin, special.name());
             byte specialEnabled = container.getOrDefault(key, PersistentDataType.BYTE, (byte) 0);
             if(specialEnabled == (byte) 1) {
-                specialsList.add(special);
+                specialtiesList.add(special);
             }
         }
 
-        return specialsList;
+        return specialtiesList;
     }
 }

@@ -1,6 +1,6 @@
 package com.github.birdsoftheworld.specialloot.enums;
 
-public enum Specials {
+public enum Specialties {
     INSTANT_DEATH,
     AIR_STRIKE,
     TELEPORT_HOME

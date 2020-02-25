@@ -1,6 +1,6 @@
 package com.github.birdsoftheworld.specialloot.commands;
 
-import com.github.birdsoftheworld.specialloot.enums.Specials;
+import com.github.birdsoftheworld.specialloot.enums.Specialties;
 import com.github.birdsoftheworld.specialloot.util.SpecialItems;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -11,13 +11,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.Plugin;
 
-import java.util.Arrays;
-
-public class AddSpecial implements CommandExecutor {
+public class AddSpecialty implements CommandExecutor {
 
     private Plugin plugin;
 
-    public AddSpecial(Plugin plugin) {
+    public AddSpecialty(Plugin plugin) {
         this.plugin = plugin;
     }
 
@@ -36,15 +34,15 @@ public class AddSpecial implements CommandExecutor {
         PlayerInventory playerInventory = player.getInventory();
         ItemStack heldItem = playerInventory.getItemInMainHand();
 
-        Specials special;
+        Specialties specialty;
         try {
-            special = Specials.valueOf(strings[0].toUpperCase());
+            specialty = Specialties.valueOf(strings[0].toUpperCase());
         } catch (Exception ignored) {
-            player.sendMessage(ChatColor.RED.toString() + "That's not a special.");
+            player.sendMessage(ChatColor.RED.toString() + "That's not a specialty.");
             return true;
         }
 
-        ItemStack specialItem = SpecialItems.createSpecial(heldItem, plugin, special, true);
+        ItemStack specialItem = SpecialItems.setSpecialty(heldItem, plugin, specialty, true);
 
         playerInventory.setItemInMainHand(specialItem);
 
