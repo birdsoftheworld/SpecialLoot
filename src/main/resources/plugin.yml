@@ -1,0 +1,11 @@
+name: SpecialLoot
+main: com.github.birdsoftheworld.specialloot.SpecialLoot
+version: 0.1.0
+api-version: "1.15"
+commands:
+  addspecial:
+    usage: /addspecial ability
+    permission: specialloot.changespecial
+permissions:
+  specialloot.changespecial:
+    default: op
