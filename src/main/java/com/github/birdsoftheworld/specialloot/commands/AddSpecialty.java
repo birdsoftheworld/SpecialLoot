@@ -2,6 +2,7 @@ package com.github.birdsoftheworld.specialloot.commands;
 
 import com.github.birdsoftheworld.specialloot.enums.Specialties;
 import com.github.birdsoftheworld.specialloot.util.SpecialItems;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -37,12 +38,19 @@ public class AddSpecialty implements CommandExecutor {
         Specialties specialty;
         try {
             specialty = Specialties.valueOf(strings[0].toUpperCase());
-        } catch (Exception ignored) {
+        } catch (Exception e) {
             player.sendMessage(ChatColor.RED.toString() + "That's not a specialty.");
             return true;
         }
 
-        ItemStack specialItem = SpecialItems.setSpecialty(heldItem, plugin, specialty, true);
+        ItemStack specialItem;
+        if(SpecialItems.isSpecialItem(heldItem, plugin)) {
+            specialItem = heldItem;
+        } else {
+            specialItem = SpecialItems.createSpecialItem(heldItem, plugin);
+        }
+
+        SpecialItems.setSpecialty(specialItem, plugin, specialty, true);
 
         playerInventory.setItemInMainHand(specialItem);
 

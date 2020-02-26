@@ -6,6 +6,11 @@ commands:
   addspecialty:
     usage: /addspecialty specialty
     permission: specialloot.changespecialties
+  listspecialties:
+    usage: /listspecialties
+    permission: specialloot.listspecialties
 permissions:
   specialloot.changespecialties:
     default: op
+  specialloot.listspecialties:
+    default: true
