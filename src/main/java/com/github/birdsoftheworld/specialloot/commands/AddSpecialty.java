@@ -18,7 +18,7 @@ public class AddSpecialty implements CommandExecutor {
 
     public AddSpecialty(Plugin plugin) {
         this.plugin = plugin;
-        this.specialItems = new SpecialItems();
+        this.specialItems = new SpecialItems(plugin);
     }
 
     @Override
@@ -28,6 +28,7 @@ public class AddSpecialty implements CommandExecutor {
             return true;
         }
 
+        // require arguments
         if(strings.length < 1) {
             return false;
         }
@@ -36,6 +37,12 @@ public class AddSpecialty implements CommandExecutor {
         PlayerInventory playerInventory = player.getInventory();
         ItemStack heldItem = playerInventory.getItemInMainHand();
 
+        if (heldItem.getType().isAir()) {
+            commandSender.sendMessage(ChatColor.RED.toString() + "You must be holding an item to use this command.");
+            return true;
+        }
+
+        // get corresponding specialty
         Specialties specialty;
         try {
             specialty = Specialties.valueOf(strings[0].toUpperCase());
@@ -45,6 +52,7 @@ public class AddSpecialty implements CommandExecutor {
         }
 
         ItemStack specialItem;
+        // make item a special item if it isn't already
         if(specialItems.isSpecialItem(heldItem, plugin)) {
             specialItem = heldItem;
         } else {

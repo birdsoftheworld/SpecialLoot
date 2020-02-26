@@ -18,18 +18,18 @@ public class SpecialItemListener implements Listener {
 
     public SpecialItemListener(Plugin plugin) {
         this.plugin = plugin;
-        this.specialItems = new SpecialItems();
+        this.specialItems = new SpecialItems(plugin);
     }
 
     @EventHandler
     public void onInteract(PlayerInteractEvent event) {
-        Player player = event.getPlayer();
         ItemStack item = event.getItem();
 
         if (item != null) {
             List<Specialties> specialties = specialItems.getSpecialties(item, plugin);
             for(Specialties special : specialties) {
-                player.sendMessage(special.name());
+                // run specialty actions
+                special.onUsed(event);
             }
         }
     }

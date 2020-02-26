@@ -12,8 +12,15 @@ import org.bukkit.plugin.Plugin;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class SpecialItems {
+    private final NamespacedKey specialtiesKey;
+    private final NamespacedKey randomKey;
+    public SpecialItems(Plugin plugin) {
+        specialtiesKey = new NamespacedKey(plugin, "specialties");
+        randomKey = new NamespacedKey(plugin, "random");
+    }
 
     public ItemStack createSpecialItem(ItemStack item, Plugin plugin) {
         ItemStack clonedItem = item.clone();
@@ -22,8 +29,6 @@ public class SpecialItems {
         assert meta != null;
         PersistentDataContainer container = meta.getPersistentDataContainer();
         PersistentDataAdapterContext context = container.getAdapterContext();
-
-        NamespacedKey specialtiesKey = new NamespacedKey(plugin, "specialties");
 
         PersistentDataContainer newContainer = context.newPersistentDataContainer();
 
@@ -35,12 +40,15 @@ public class SpecialItems {
 
         container.set(specialtiesKey, PersistentDataType.TAG_CONTAINER, newContainer);
 
+        // random value to prevent items from being stack-able
+        container.set(randomKey, PersistentDataType.STRING, UUID.randomUUID().toString());
+
         clonedItem.setItemMeta(meta);
 
         return clonedItem;
     }
 
-    public void setSpecialty(ItemStack item, Plugin plugin, Specialties special, boolean enabled) {
+    public void setSpecialty(ItemStack item, Plugin plugin, Specialties specialty, boolean enabled) {
         ItemMeta meta = item.getItemMeta();
 
         assert meta != null;
@@ -49,15 +57,27 @@ public class SpecialItems {
         NamespacedKey specialtiesKey = new NamespacedKey(plugin, "specialties");
         PersistentDataContainer specialtyHolder = holder.get(specialtiesKey, PersistentDataType.TAG_CONTAINER);
 
+        // error if item doesn't have the specialties container
         if(specialtyHolder == null) {
             throw new IllegalStateException("Item is not a SpecialItem!");
         }
 
-        NamespacedKey key = new NamespacedKey(plugin, special.name());
+        NamespacedKey key = new NamespacedKey(plugin, specialty.name());
 
+        // set if enabled
         specialtyHolder.set(key, PersistentDataType.BYTE, (byte) (enabled ? 1 : 0));
 
         holder.set(specialtiesKey, PersistentDataType.TAG_CONTAINER, specialtyHolder);
+
+        // add specialty's lore
+        List<String> lores = meta.getLore();
+        if (lores == null) {
+            lores = new ArrayList<>();
+        }
+
+        lores.add(specialty.getLore());
+
+        meta.setLore(lores);
 
         item.setItemMeta(meta);
     }
@@ -119,10 +139,15 @@ public class SpecialItems {
 
         for (Specialties specialty : Specialties.values()) {
             NamespacedKey key = new NamespacedKey(plugin, specialty.name());
-            boolean enabled = specialtyContainer.get(key, PersistentDataType.BYTE) == 1;
-            if (!enabled) {
+
+            // continue if disabled
+            @SuppressWarnings("ConstantConditions")
+            byte enabledByte = specialtyContainer.get(key, PersistentDataType.BYTE);
+            if (enabledByte == 0) {
                 continue;
             }
+
+            // add glint
             if (specialty.hasEnchantmentGlint()) {
                 meta.addEnchant(glint, 0, true);
             }
