@@ -29,7 +29,7 @@ public class SpecialItemListener implements Listener {
             List<Specialties> specialties = specialItems.getSpecialties(item, plugin);
             for(Specialties special : specialties) {
                 // run specialty actions
-                special.onUsed(event);
+                special.onUsed(event, plugin);
             }
         }
     }
