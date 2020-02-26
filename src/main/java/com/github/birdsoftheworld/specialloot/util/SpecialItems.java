@@ -1,5 +1,6 @@
 package com.github.birdsoftheworld.specialloot.util;
 
+import com.github.birdsoftheworld.specialloot.enchantments.Glint;
 import com.github.birdsoftheworld.specialloot.enums.Specialties;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -14,7 +15,7 @@ import java.util.List;
 
 public class SpecialItems {
 
-    public static ItemStack createSpecialItem(ItemStack item, Plugin plugin) {
+    public ItemStack createSpecialItem(ItemStack item, Plugin plugin) {
         ItemStack clonedItem = item.clone();
         ItemMeta meta = clonedItem.getItemMeta();
 
@@ -39,7 +40,7 @@ public class SpecialItems {
         return clonedItem;
     }
 
-    public static ItemStack setSpecialty(ItemStack item, Plugin plugin, Specialties special, boolean enabled) {
+    public void setSpecialty(ItemStack item, Plugin plugin, Specialties special, boolean enabled) {
         ItemMeta meta = item.getItemMeta();
 
         assert meta != null;
@@ -59,11 +60,9 @@ public class SpecialItems {
         holder.set(specialtiesKey, PersistentDataType.TAG_CONTAINER, specialtyHolder);
 
         item.setItemMeta(meta);
-
-        return item;
     }
 
-    public static List<Specialties> getSpecialties(ItemStack item, Plugin plugin) {
+    public List<Specialties> getSpecialties(ItemStack item, Plugin plugin) {
         ItemMeta meta = item.getItemMeta();
 
         assert meta != null;
@@ -91,7 +90,7 @@ public class SpecialItems {
         return specialtiesList;
     }
 
-    public static boolean isSpecialItem(ItemStack item, Plugin plugin) {
+    public boolean isSpecialItem(ItemStack item, Plugin plugin) {
         ItemMeta meta = item.getItemMeta();
 
         assert meta != null;
@@ -100,5 +99,35 @@ public class SpecialItems {
         NamespacedKey key = new NamespacedKey(plugin, "specialties");
 
         return container.has(key, PersistentDataType.TAG_CONTAINER);
+    }
+
+    public void applySpecialProperties(ItemStack item, Plugin plugin) {
+        ItemMeta meta = item.getItemMeta();
+
+        assert meta != null;
+        PersistentDataContainer container = meta.getPersistentDataContainer();
+
+        NamespacedKey specialtiesKey = new NamespacedKey(plugin, "specialties");
+        PersistentDataContainer specialtyContainer = container.get(specialtiesKey, PersistentDataType.TAG_CONTAINER);
+
+        if (specialtyContainer == null) {
+            throw new IllegalStateException("Item is not a SpecialItem!");
+        }
+
+        NamespacedKey enchantmentGlintKey = new NamespacedKey(plugin, "glint");
+        Glint glint = new Glint (enchantmentGlintKey);
+
+        for (Specialties specialty : Specialties.values()) {
+            NamespacedKey key = new NamespacedKey(plugin, specialty.name());
+            boolean enabled = specialtyContainer.get(key, PersistentDataType.BYTE) == 1;
+            if (!enabled) {
+                continue;
+            }
+            if (specialty.hasEnchantmentGlint()) {
+                meta.addEnchant(glint, 0, true);
+            }
+        }
+
+        item.setItemMeta(meta);
     }
 }

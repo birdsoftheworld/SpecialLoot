@@ -13,10 +13,12 @@ import java.util.List;
 
 public class SpecialItemListener implements Listener {
 
-    private Plugin plugin;
+    private final Plugin plugin;
+    private final SpecialItems specialItems;
 
     public SpecialItemListener(Plugin plugin) {
         this.plugin = plugin;
+        this.specialItems = new SpecialItems();
     }
 
     @EventHandler
@@ -25,7 +27,7 @@ public class SpecialItemListener implements Listener {
         ItemStack item = event.getItem();
 
         if (item != null) {
-            List<Specialties> specialties = SpecialItems.getSpecialties(item, plugin);
+            List<Specialties> specialties = specialItems.getSpecialties(item, plugin);
             for(Specialties special : specialties) {
                 player.sendMessage(special.name());
             }

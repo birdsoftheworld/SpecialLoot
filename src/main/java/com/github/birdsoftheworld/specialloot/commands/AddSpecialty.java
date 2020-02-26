@@ -2,7 +2,6 @@ package com.github.birdsoftheworld.specialloot.commands;
 
 import com.github.birdsoftheworld.specialloot.enums.Specialties;
 import com.github.birdsoftheworld.specialloot.util.SpecialItems;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -14,10 +13,12 @@ import org.bukkit.plugin.Plugin;
 
 public class AddSpecialty implements CommandExecutor {
 
-    private Plugin plugin;
+    private final Plugin plugin;
+    private final SpecialItems specialItems;
 
     public AddSpecialty(Plugin plugin) {
         this.plugin = plugin;
+        this.specialItems = new SpecialItems();
     }
 
     @Override
@@ -44,13 +45,15 @@ public class AddSpecialty implements CommandExecutor {
         }
 
         ItemStack specialItem;
-        if(SpecialItems.isSpecialItem(heldItem, plugin)) {
+        if(specialItems.isSpecialItem(heldItem, plugin)) {
             specialItem = heldItem;
         } else {
-            specialItem = SpecialItems.createSpecialItem(heldItem, plugin);
+            specialItem = specialItems.createSpecialItem(heldItem, plugin);
         }
 
-        SpecialItems.setSpecialty(specialItem, plugin, specialty, true);
+        specialItems.setSpecialty(specialItem, plugin, specialty, true);
+
+        specialItems.applySpecialProperties(specialItem, plugin);
 
         playerInventory.setItemInMainHand(specialItem);
 
