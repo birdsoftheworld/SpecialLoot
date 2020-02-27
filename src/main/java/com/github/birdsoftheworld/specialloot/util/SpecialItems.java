@@ -3,8 +3,11 @@ package com.github.birdsoftheworld.specialloot.util;
 import com.github.birdsoftheworld.specialloot.enchantments.Glint;
 import com.github.birdsoftheworld.specialloot.specialties.Specialties;
 import com.github.birdsoftheworld.specialloot.specialties.Specialty;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataAdapterContext;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -18,9 +21,13 @@ import java.util.UUID;
 public class SpecialItems {
     private final NamespacedKey specialtiesKey;
     private final NamespacedKey randomKey;
+    private final NamespacedKey maxUsesKey;
+    private final NamespacedKey usesKey;
     public SpecialItems(Plugin plugin) {
         specialtiesKey = new NamespacedKey(plugin, "specialties");
         randomKey = new NamespacedKey(plugin, "random");
+        maxUsesKey = new NamespacedKey(plugin, "maxUses");
+        usesKey = new NamespacedKey(plugin, "uses");
     }
 
     public ItemStack createSpecialItem(ItemStack item, Plugin plugin) {
@@ -39,6 +46,13 @@ public class SpecialItems {
             newContainer.set(key, PersistentDataType.BYTE, (byte) 0);
         }
 
+        // set max uses
+        newContainer.set(maxUsesKey, PersistentDataType.INTEGER, Integer.MAX_VALUE);
+
+        // set uses
+        newContainer.set(usesKey, PersistentDataType.INTEGER, Integer.MAX_VALUE);
+
+        // add tag container to normal container
         container.set(specialtiesKey, PersistentDataType.TAG_CONTAINER, newContainer);
 
         // random value to prevent items from being stack-able
@@ -68,15 +82,34 @@ public class SpecialItems {
         // set if enabled
         specialtyHolder.set(key, PersistentDataType.BYTE, (byte) (enabled ? 1 : 0));
 
-        holder.set(specialtiesKey, PersistentDataType.TAG_CONTAINER, specialtyHolder);
-
-        // add specialty's lore
-        List<String> lores = meta.getLore();
-        if (lores == null) {
-            lores = new ArrayList<>();
+        // add other specialties' lores
+        List<String> lores = new ArrayList<>();
+        for (Specialty enabledSpecialty : getSpecialties(item, plugin)) {
+            lores.add(enabledSpecialty.getProperties().getLore());
         }
 
+        // add current specialty's lore
         lores.add(specialty.getProperties().getLore());
+
+        // set max uses
+        @SuppressWarnings("ConstantConditions")
+        int currentMaxUses = specialtyHolder.get(maxUsesKey, PersistentDataType.INTEGER);
+        int specialMaxUses = specialty.getProperties().getMaxUses();
+        int finalMaxUses = Math.min(currentMaxUses, specialMaxUses);
+
+        // set current uses
+        @SuppressWarnings("ConstantConditions")
+        int currentUses = specialtyHolder.get(usesKey, PersistentDataType.INTEGER);
+        int finalUses = Math.min(currentUses, finalMaxUses);
+
+        // set values for uses
+        specialtyHolder.set(maxUsesKey, PersistentDataType.INTEGER, finalMaxUses);
+        specialtyHolder.set(usesKey, PersistentDataType.INTEGER, finalUses);
+
+        // set lores for uses
+        lores.add(ChatColor.AQUA.toString() + "Uses: " + finalUses + " / " + finalMaxUses);
+
+        holder.set(specialtiesKey, PersistentDataType.TAG_CONTAINER, specialtyHolder);
 
         meta.setLore(lores);
 
@@ -128,7 +161,6 @@ public class SpecialItems {
         assert meta != null;
         PersistentDataContainer container = meta.getPersistentDataContainer();
 
-        NamespacedKey specialtiesKey = new NamespacedKey(plugin, "specialties");
         PersistentDataContainer specialtyContainer = container.get(specialtiesKey, PersistentDataType.TAG_CONTAINER);
 
         if (specialtyContainer == null) {
@@ -155,5 +187,38 @@ public class SpecialItems {
         }
 
         item.setItemMeta(meta);
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    public boolean use(ItemStack item, Plugin plugin) {
+        ItemMeta meta = item.getItemMeta();
+
+        assert meta != null;
+        PersistentDataContainer container = meta.getPersistentDataContainer();
+
+        PersistentDataContainer specialtyContainer = container.get(specialtiesKey, PersistentDataType.TAG_CONTAINER);
+
+        int currentUses = specialtyContainer.get(usesKey, PersistentDataType.INTEGER);
+        int maxUses = specialtyContainer.get(maxUsesKey, PersistentDataType.INTEGER);
+        int finalUses = Math.min(currentUses, maxUses) - 1;
+
+        specialtyContainer.set(usesKey, PersistentDataType.INTEGER, finalUses);
+
+        // save uses
+        container.set(specialtiesKey, PersistentDataType.TAG_CONTAINER, specialtyContainer);
+
+        // add specialties' lores
+        List<String> lores = new ArrayList<>();
+        for (Specialty enabledSpecialty : getSpecialties(item, plugin)) {
+            lores.add(enabledSpecialty.getProperties().getLore());
+        }
+
+        lores.add(ChatColor.AQUA.toString() + "Uses: " + finalUses + " / " + maxUses);
+
+        meta.setLore(lores);
+
+        item.setItemMeta(meta);
+
+        return finalUses <= 0;
     }
 }
