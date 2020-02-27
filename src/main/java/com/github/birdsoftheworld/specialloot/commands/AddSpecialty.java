@@ -1,12 +1,10 @@
 package com.github.birdsoftheworld.specialloot.commands;
 
-import com.github.birdsoftheworld.specialloot.enums.Specialties;
+import com.github.birdsoftheworld.specialloot.specialties.Specialties;
+import com.github.birdsoftheworld.specialloot.specialties.Specialty;
 import com.github.birdsoftheworld.specialloot.util.SpecialItems;
 import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabCompleter;
+import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -15,7 +13,7 @@ import org.bukkit.plugin.Plugin;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AddSpecialty implements CommandExecutor, TabCompleter {
+public class AddSpecialty implements TabExecutor {
 
     private final Plugin plugin;
     private final SpecialItems specialItems;
@@ -26,8 +24,8 @@ public class AddSpecialty implements CommandExecutor, TabCompleter {
         this.specialItems = new SpecialItems(plugin);
 
         specialties = new ArrayList<>();
-        for (Specialties specialty : Specialties.values()) {
-            specialties.add(specialty.name().toLowerCase());
+        for (Specialty specialty : Specialties.values()) {
+            specialties.add(specialty.getName());
         }
     }
 
@@ -53,7 +51,7 @@ public class AddSpecialty implements CommandExecutor, TabCompleter {
         }
 
         // get corresponding specialty
-        Specialties specialty;
+        Specialty specialty;
         try {
             specialty = Specialties.valueOf(strings[0].toUpperCase());
         } catch (Exception e) {

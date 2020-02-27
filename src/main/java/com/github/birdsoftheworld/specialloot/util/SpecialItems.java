@@ -1,7 +1,8 @@
 package com.github.birdsoftheworld.specialloot.util;
 
 import com.github.birdsoftheworld.specialloot.enchantments.Glint;
-import com.github.birdsoftheworld.specialloot.enums.Specialties;
+import com.github.birdsoftheworld.specialloot.specialties.Specialties;
+import com.github.birdsoftheworld.specialloot.specialties.Specialty;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -33,8 +34,8 @@ public class SpecialItems {
         PersistentDataContainer newContainer = context.newPersistentDataContainer();
 
         // set all specialties to disabled
-        for(Specialties special : Specialties.values()) {
-            NamespacedKey key = new NamespacedKey(plugin, special.name());
+        for(Specialty special : Specialties.values()) {
+            NamespacedKey key = new NamespacedKey(plugin, special.getName());
             newContainer.set(key, PersistentDataType.BYTE, (byte) 0);
         }
 
@@ -48,7 +49,7 @@ public class SpecialItems {
         return clonedItem;
     }
 
-    public void setSpecialty(ItemStack item, Plugin plugin, Specialties specialty, boolean enabled) {
+    public void setSpecialty(ItemStack item, Plugin plugin, Specialty specialty, boolean enabled) {
         ItemMeta meta = item.getItemMeta();
 
         assert meta != null;
@@ -62,7 +63,7 @@ public class SpecialItems {
             throw new IllegalStateException("Item is not a SpecialItem!");
         }
 
-        NamespacedKey key = new NamespacedKey(plugin, specialty.name());
+        NamespacedKey key = new NamespacedKey(plugin, specialty.getName());
 
         // set if enabled
         specialtyHolder.set(key, PersistentDataType.BYTE, (byte) (enabled ? 1 : 0));
@@ -75,20 +76,20 @@ public class SpecialItems {
             lores = new ArrayList<>();
         }
 
-        lores.add(specialty.getLore());
+        lores.add(specialty.getProperties().getLore());
 
         meta.setLore(lores);
 
         item.setItemMeta(meta);
     }
 
-    public List<Specialties> getSpecialties(ItemStack item, Plugin plugin) {
+    public List<Specialty> getSpecialties(ItemStack item, Plugin plugin) {
         ItemMeta meta = item.getItemMeta();
 
         assert meta != null;
         PersistentDataContainer container = meta.getPersistentDataContainer();
 
-        List<Specialties> specialtiesList = new ArrayList<>();
+        List<Specialty> specialtiesList = new ArrayList<>();
 
         NamespacedKey specialtiesKey = new NamespacedKey(plugin, "specialties");
         PersistentDataContainer specialtiesContainer = container.get(specialtiesKey, PersistentDataType.TAG_CONTAINER);
@@ -99,8 +100,8 @@ public class SpecialItems {
         }
 
         // iterate through specialties and check if item has them
-        for(Specialties special : Specialties.values()) {
-            NamespacedKey key = new NamespacedKey(plugin, special.name());
+        for(Specialty special : Specialties.values()) {
+            NamespacedKey key = new NamespacedKey(plugin, special.getName());
             byte specialEnabled = specialtiesContainer.getOrDefault(key, PersistentDataType.BYTE, (byte) 0);
             if(specialEnabled == (byte) 1) {
                 specialtiesList.add(special);
@@ -137,8 +138,8 @@ public class SpecialItems {
         NamespacedKey enchantmentGlintKey = new NamespacedKey(plugin, "glint");
         Glint glint = new Glint (enchantmentGlintKey);
 
-        for (Specialties specialty : Specialties.values()) {
-            NamespacedKey key = new NamespacedKey(plugin, specialty.name());
+        for (Specialty specialty : Specialties.values()) {
+            NamespacedKey key = new NamespacedKey(plugin, specialty.getName());
 
             // continue if disabled
             @SuppressWarnings("ConstantConditions")
@@ -148,7 +149,7 @@ public class SpecialItems {
             }
 
             // add glint
-            if (specialty.hasEnchantmentGlint()) {
+            if (specialty.getProperties().hasEnchantmentGlint()) {
                 meta.addEnchant(glint, 0, true);
             }
         }

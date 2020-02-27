@@ -1,5 +1,5 @@
 singleuse:
   namespace: "singleuse"
   entries:
-    - "AirStrike"
     - "TeleportHome"
+#    - "AirStrike"

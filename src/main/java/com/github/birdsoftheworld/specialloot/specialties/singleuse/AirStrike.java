@@ -1,9 +1,17 @@
 package com.github.birdsoftheworld.specialloot.specialties.singleuse;
 
-import sun.plugin2.main.server.Plugin;
+import com.github.birdsoftheworld.specialloot.specialties.InteractSpecial;
+import com.github.birdsoftheworld.specialloot.specialties.Specialty;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.plugin.Plugin;
 
-public class AirStrike {
+public class AirStrike extends Specialty implements InteractSpecial {
     public AirStrike(Plugin plugin) {
+        super(plugin, "Spawn TNT from above", true);
+    }
+
+    @Override
+    public void onInteract(PlayerInteractEvent event) {
 
     }
 }
