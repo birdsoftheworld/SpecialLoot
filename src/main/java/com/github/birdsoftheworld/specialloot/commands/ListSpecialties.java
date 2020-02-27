@@ -11,7 +11,7 @@ public class ListSpecialties implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         for(Specialty specialty : Specialties.values()) {
-            sender.sendMessage(ChatColor.BOLD.toString() + ChatColor.GREEN.toString() + specialty.getName().toLowerCase());
+            sender.sendMessage(ChatColor.BOLD.toString() + ChatColor.GREEN.toString() + specialty.getName());
             sender.sendMessage(specialty.getProperties().getLoreRaw());
         }
         return true;
