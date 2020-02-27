@@ -6,19 +6,29 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.Plugin;
 
-public class AddSpecialty implements CommandExecutor {
+import java.util.ArrayList;
+import java.util.List;
+
+public class AddSpecialty implements CommandExecutor, TabCompleter {
 
     private final Plugin plugin;
     private final SpecialItems specialItems;
+    private final List<String> specialties;
 
     public AddSpecialty(Plugin plugin) {
         this.plugin = plugin;
         this.specialItems = new SpecialItems(plugin);
+
+        specialties = new ArrayList<>();
+        for (Specialties specialty : Specialties.values()) {
+            specialties.add(specialty.name().toLowerCase());
+        }
     }
 
     @Override
@@ -66,5 +76,10 @@ public class AddSpecialty implements CommandExecutor {
         playerInventory.setItemInMainHand(specialItem);
 
         return true;
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+        return specialties;
     }
 }
