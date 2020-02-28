@@ -1,6 +1,6 @@
 package com.github.birdsoftheworld.specialloot.listeners;
 
-import com.github.birdsoftheworld.specialloot.events.LootTableGenerateListener;
+import com.github.birdsoftheworld.specialloot.events.LootableBlockCreateListener;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
@@ -13,7 +13,7 @@ public class ListenerManager {
 
     public void registerListeners() {
         Bukkit.getPluginManager().registerEvents(new InteractListener(plugin), plugin);
-        Bukkit.getPluginManager().registerEvents(new LootTableGenerateListener(), plugin);
+        Bukkit.getPluginManager().registerEvents(new LootableBlockCreateListener(), plugin);
         Bukkit.getPluginManager().registerEvents(new LootListener(plugin), plugin);
     }
 }
