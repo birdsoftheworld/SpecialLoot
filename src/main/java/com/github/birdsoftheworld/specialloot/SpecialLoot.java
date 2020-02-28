@@ -4,8 +4,9 @@ import com.github.birdsoftheworld.specialloot.commands.AddSpecialty;
 import com.github.birdsoftheworld.specialloot.commands.ListSpecialties;
 import com.github.birdsoftheworld.specialloot.enchantments.Glint;
 import com.github.birdsoftheworld.specialloot.events.LootTableGenerateListener;
+import com.github.birdsoftheworld.specialloot.listeners.ListenerManager;
 import com.github.birdsoftheworld.specialloot.listeners.LootListener;
-import com.github.birdsoftheworld.specialloot.listeners.SpecialItemListener;
+import com.github.birdsoftheworld.specialloot.listeners.InteractListener;
 import com.github.birdsoftheworld.specialloot.specialties.Specialties;
 import com.github.birdsoftheworld.specialloot.specialties.Specialty;
 import com.github.birdsoftheworld.specialloot.util.SpecialtyProperty;
@@ -37,9 +38,8 @@ public class SpecialLoot extends JavaPlugin {
         Bukkit.getPluginCommand("addspecialty").setExecutor(new AddSpecialty(this));
         Bukkit.getPluginCommand("listspecialties").setExecutor(new ListSpecialties());
 
-        Bukkit.getPluginManager().registerEvents(new SpecialItemListener(this), this);
-        Bukkit.getPluginManager().registerEvents(new LootTableGenerateListener(), this);
-        Bukkit.getPluginManager().registerEvents(new LootListener(this), this);
+        ListenerManager listenerManager = new ListenerManager(this);
+        listenerManager.registerListeners();
     }
 
     private void registerSpecialties() {

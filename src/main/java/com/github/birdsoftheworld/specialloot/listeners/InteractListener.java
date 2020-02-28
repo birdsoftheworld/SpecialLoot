@@ -9,18 +9,15 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.Plugin;
 
 import java.util.List;
 
-public class SpecialItemListener implements Listener {
+public class InteractListener implements Listener {
 
-    private final Plugin plugin;
     private final SpecialItems specialItems;
 
-    public SpecialItemListener(Plugin plugin) {
-        this.plugin = plugin;
+    public InteractListener(Plugin plugin) {
         this.specialItems = new SpecialItems(plugin);
     }
 
@@ -37,7 +34,6 @@ public class SpecialItemListener implements Listener {
 
                     if (useDurability) {
                         Player player = event.getPlayer();
-                        PlayerInventory playerInventory = player.getInventory();
 
                         boolean itemDestroyed = specialItems.use(item);
                         player.updateInventory();
