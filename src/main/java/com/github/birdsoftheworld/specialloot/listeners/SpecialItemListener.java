@@ -3,6 +3,7 @@ package com.github.birdsoftheworld.specialloot.listeners;
 import com.github.birdsoftheworld.specialloot.specialties.InteractSpecial;
 import com.github.birdsoftheworld.specialloot.specialties.Specialty;
 import com.github.birdsoftheworld.specialloot.util.SpecialItems;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -39,12 +40,17 @@ public class SpecialItemListener implements Listener {
                         Player player = event.getPlayer();
                         PlayerInventory playerInventory = player.getInventory();
 
-                        boolean itemBroke = specialItems.use(item, plugin);
+                        boolean itemDestroyed = specialItems.use(item, plugin);
                         player.updateInventory();
 
                         // stop if item broke
-                        if (itemBroke) {
+                        if (itemDestroyed) {
+                            // will crash if event is not cancelled
+                            event.setCancelled(true);
                             player.getInventory().remove(item);
+
+                            // play item breaking sound
+                            player.playSound(player.getLocation(), Sound.ENTITY_ITEM_BREAK, 1f, 1f);
                             return;
                         }
                     }
