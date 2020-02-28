@@ -16,4 +16,8 @@ public class SpecialtyProperties {
     public void setProperty(String key, SpecialtyProperty property) {
         properties.put(key, property);
     }
+
+    public boolean isDefined(String key) {
+        return properties.containsKey(key);
+    }
 }

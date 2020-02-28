@@ -3,13 +3,9 @@ singleuse:
     lore: "Teleport to your bed"
     glint: true
     max-uses: 1
-    break-sound: false
+    config: "utility/TeleportHome.yml"
   AirStrike:
     lore: "Spawn TNT in the sky"
     glint: true
     max-uses: 1
-    explosions: 10
-    interval: 5
-    height: 10
-    radius: 8
-    break-sound: false
+    config: "utility/AirStrike.yml"

@@ -1,0 +1,5 @@
+explosions: 10
+interval: 5
+height: 10
+radius: 8
+break-sound: false

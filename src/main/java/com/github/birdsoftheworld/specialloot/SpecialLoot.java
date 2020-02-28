@@ -62,14 +62,44 @@ public class SpecialLoot extends JavaPlugin {
 
                 Specialty registeredSpecialty = registerSpecialties.register(categoryKey, path + "." + key);
 
-                Set<String> propertyKeys = configSection.getKeys(false);
+                processProperties(configSection, registeredSpecialty);
+            }
+        }
+    }
 
-                for (String propertyKey : propertyKeys) {
-                    SpecialtyProperty newProperty = new SpecialtyProperty();
-                    newProperty.setValue(configSection.get(propertyKey));
+    private void processProperties(ConfigurationSection configSection, Specialty specialty) {
+        Set<String> propertyKeys = configSection.getKeys(false);
 
-                    registeredSpecialty.setProperty(propertyKey, newProperty);
+        for (String propertyKey : propertyKeys) {
+            if (specialty.getProperties().isDefined(propertyKey)) {
+                continue;
+            }
+
+            if (propertyKey.equals("config")) {
+                String path = (String) configSection.get(propertyKey);
+                assert path != null;
+                File loadedConfigFile = new File(getDataFolder(), path);
+
+                if (!loadedConfigFile.exists()) {
+                    loadedConfigFile.getParentFile().mkdirs();
+                    saveResource(path, false);
                 }
+
+                YamlConfiguration yamlConfiguration = new YamlConfiguration();
+
+                try {
+                    yamlConfiguration.load(loadedConfigFile);
+                } catch (IOException | InvalidConfigurationException e) {
+                    e.printStackTrace();
+                    continue;
+                }
+
+                processProperties(yamlConfiguration, specialty);
+            } else {
+                SpecialtyProperty newProperty = new SpecialtyProperty();
+                newProperty.setValue(configSection.get(propertyKey));
+
+                specialty.setProperty(propertyKey, newProperty);
             }
         }
     }
