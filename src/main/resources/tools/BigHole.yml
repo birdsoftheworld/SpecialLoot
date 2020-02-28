@@ -1,0 +1,9 @@
+range: 1
+blacklist:
+  - "BEDROCK"
+  - "END_PORTAL_FRAME"
+  - "END_PORTAL"
+  - "PORTAL"
+  - "OBSIDIAN"
+  - "END_GATEWAY"
+break-sound: true

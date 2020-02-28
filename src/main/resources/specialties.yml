@@ -4,8 +4,16 @@ singleuse:
     glint: true
     max-uses: 1
     config: "utility/TeleportHome.yml"
+
   AirStrike:
     lore: "Spawn TNT in the sky"
     glint: true
     max-uses: 1
     config: "utility/AirStrike.yml"
+
+tools:
+  BigHole:
+    lore: "Digs a big hole"
+    glint: true
+    max-uses: 10
+    config: "tools/BigHole.yml"
