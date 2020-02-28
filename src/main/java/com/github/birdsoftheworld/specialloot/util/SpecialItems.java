@@ -14,7 +14,6 @@ import org.bukkit.plugin.Plugin;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class SpecialItems {
     private final NamespacedKey specialtiesKey;
@@ -53,9 +52,6 @@ public class SpecialItems {
         // add tag container to normal container
         container.set(specialtiesKey, PersistentDataType.TAG_CONTAINER, newContainer);
 
-        // random value to prevent items from being stack-able
-        container.set(randomKey, PersistentDataType.STRING, UUID.randomUUID().toString());
-
         clonedItem.setItemMeta(meta);
 
         return clonedItem;
@@ -65,6 +61,9 @@ public class SpecialItems {
         ItemMeta meta = item.getItemMeta();
 
         assert meta != null;
+        // make item unbreakable
+        meta.setUnbreakable((Boolean) specialty.getPropertyOrDefault("unbreakable", true).getValue());
+
         PersistentDataContainer holder = meta.getPersistentDataContainer();
 
         NamespacedKey specialtiesKey = new NamespacedKey(plugin, "specialties");
