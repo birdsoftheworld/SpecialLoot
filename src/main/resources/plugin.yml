@@ -4,7 +4,7 @@ version: 0.1.0
 api-version: "1.15"
 commands:
   addspecialty:
-    usage: /addspecialty specialty
+    usage: /addspecialty <specialty>
     permission: specialloot.changespecialties
   listspecialties:
     usage: /listspecialties

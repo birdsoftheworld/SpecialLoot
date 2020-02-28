@@ -9,7 +9,6 @@ import java.util.List;
 
 public class Specialties {
 
-    private final String DEFAULT_CLASSPATH = "com.github.birdsoftheworld.specialloot.specialties";
     private Plugin plugin;
     private static List<Specialty> specialties = new ArrayList<>();
     private static HashMap<String, Specialty> specialtiesByName = new HashMap<>();
@@ -19,8 +18,9 @@ public class Specialties {
         this.plugin = plugin;
     }
 
-    public void register(String specialty, String namespace) {
-        String path = DEFAULT_CLASSPATH + "." + namespace + "." + specialty;
+    public Specialty register(String specialty, String path) {
+
+        path = path + "." + specialty;
 
         Class<?> specialtyClass;
         try {
@@ -47,12 +47,8 @@ public class Specialties {
         specialties.add(loadedSpecialty);
         specialtiesByName.put(specialty.toLowerCase(), loadedSpecialty);
         keys.put(loadedSpecialty, new NamespacedKey(plugin, specialty.toLowerCase()));
-    }
 
-    public void registerAll(List<String> specialties, String namespace) {
-        for (String specialty : specialties) {
-            register(specialty, namespace);
-        }
+        return loadedSpecialty;
     }
 
     public static List<Specialty> values() {

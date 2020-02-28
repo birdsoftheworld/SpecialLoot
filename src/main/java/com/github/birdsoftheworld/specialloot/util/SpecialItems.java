@@ -4,10 +4,8 @@ import com.github.birdsoftheworld.specialloot.enchantments.Glint;
 import com.github.birdsoftheworld.specialloot.specialties.Specialties;
 import com.github.birdsoftheworld.specialloot.specialties.Specialty;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataAdapterContext;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -85,16 +83,16 @@ public class SpecialItems {
         // add other specialties' lores
         List<String> lores = new ArrayList<>();
         for (Specialty enabledSpecialty : getSpecialties(item, plugin)) {
-            lores.add(enabledSpecialty.getProperties().getLore());
+            lores.add("Specialty: " + ChatColor.RESET.toString() + ChatColor.GOLD.toString() + enabledSpecialty.getLore());
         }
 
         // add current specialty's lore
-        lores.add(specialty.getProperties().getLore());
+        lores.add("Specialty: " + ChatColor.RESET.toString() + ChatColor.GOLD.toString() + specialty.getLore());
 
         // set max uses
         @SuppressWarnings("ConstantConditions")
         int currentMaxUses = specialtyHolder.get(maxUsesKey, PersistentDataType.INTEGER);
-        int specialMaxUses = specialty.getProperties().getMaxUses();
+        int specialMaxUses = specialty.getMaxUses();
         int finalMaxUses = Math.min(currentMaxUses, specialMaxUses);
 
         // set current uses
@@ -181,7 +179,7 @@ public class SpecialItems {
             }
 
             // add glint
-            if (specialty.getProperties().hasEnchantmentGlint()) {
+            if ((boolean) specialty.getProperties().getProperty("glint").getValue()) {
                 meta.addEnchant(glint, 0, true);
             }
         }
@@ -210,7 +208,7 @@ public class SpecialItems {
         // add specialties' lores
         List<String> lores = new ArrayList<>();
         for (Specialty enabledSpecialty : getSpecialties(item, plugin)) {
-            lores.add(enabledSpecialty.getProperties().getLore());
+            lores.add("Specialty: " + ChatColor.RESET.toString() + ChatColor.GOLD.toString() + enabledSpecialty.getLore());
         }
 
         lores.add(ChatColor.AQUA.toString() + "Uses: " + finalUses + " / " + maxUses);

@@ -13,7 +13,7 @@ import org.bukkit.plugin.Plugin;
 
 public class TeleportHome extends Specialty implements InteractSpecial {
     public TeleportHome(Plugin plugin) {
-        super(plugin, "Teleport to your bed", true, 1);
+        super(plugin);
     }
 
     @Override

@@ -7,7 +7,7 @@ import org.bukkit.plugin.Plugin;
 
 public class AirStrike extends Specialty implements InteractSpecial {
     public AirStrike(Plugin plugin) {
-        super(plugin, "Spawn TNT from above", true, 1);
+        super(plugin);
     }
 
     @Override

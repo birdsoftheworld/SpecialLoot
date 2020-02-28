@@ -5,6 +5,8 @@ import com.github.birdsoftheworld.specialloot.commands.ListSpecialties;
 import com.github.birdsoftheworld.specialloot.enchantments.Glint;
 import com.github.birdsoftheworld.specialloot.listeners.SpecialItemListener;
 import com.github.birdsoftheworld.specialloot.specialties.Specialties;
+import com.github.birdsoftheworld.specialloot.specialties.Specialty;
+import com.github.birdsoftheworld.specialloot.util.SpecialtyProperty;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
@@ -16,10 +18,11 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.util.List;
 import java.util.Set;
 
 public class SpecialLoot extends JavaPlugin {
+
+    private final String DEFAULT_CLASSPATH = "com.github.birdsoftheworld.specialloot.specialties";
 
     private YamlConfiguration specialtiesConfig;
 
@@ -41,16 +44,33 @@ public class SpecialLoot extends JavaPlugin {
         Specialties registerSpecialties = new Specialties(this);
 
         for (String key : keys) {
-            ConfigurationSection category = specialtiesConfig.getConfigurationSection(key);
+            // refers to top level category, i.e. "singleuse"
+            ConfigurationSection section = specialtiesConfig.getConfigurationSection(key);
 
-            String namespace = category.getString("namespace");
-            if (namespace == null) {
-                throw new IllegalStateException("Invalid key: no provided namespace!");
+            assert section != null;
+            Set<String> categoryKeys = section.getKeys(false);
+
+            for (String categoryKey : categoryKeys) {
+                // refers to specialty configurations themselves, i.e. "AirStrike"
+                ConfigurationSection configSection = section.getConfigurationSection(categoryKey);
+
+                assert configSection != null;
+                String path = configSection.getString("path");
+                if (path == null) {
+                    path = DEFAULT_CLASSPATH;
+                }
+
+                Specialty registeredSpecialty = registerSpecialties.register(categoryKey, path + "." + key);
+
+                Set<String> propertyKeys = configSection.getKeys(false);
+
+                for (String propertyKey : propertyKeys) {
+                    SpecialtyProperty newProperty = new SpecialtyProperty();
+                    newProperty.setValue(configSection.get(propertyKey));
+
+                    registeredSpecialty.setProperty(propertyKey, newProperty);
+                }
             }
-
-            List<String> entries = category.getStringList("entries");
-
-            registerSpecialties.registerAll(entries, namespace);
         }
     }
 

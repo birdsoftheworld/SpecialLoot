@@ -1,5 +1,9 @@
 singleuse:
-  namespace: "singleuse"
-  entries:
-    - "TeleportHome"
-#    - "AirStrike"
+  TeleportHome:
+    lore: "Teleport to your bed"
+    glint: true
+    max-uses: 1
+  AirStrike:
+    lore: "Spawn TNT in the sky"
+    glint: true
+    max-uses: 1
