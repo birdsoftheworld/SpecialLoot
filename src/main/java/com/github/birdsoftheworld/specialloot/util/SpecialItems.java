@@ -20,14 +20,16 @@ public class SpecialItems {
     private final NamespacedKey randomKey;
     private final NamespacedKey maxUsesKey;
     private final NamespacedKey usesKey;
+    private final Plugin plugin;
     public SpecialItems(Plugin plugin) {
         specialtiesKey = new NamespacedKey(plugin, "specialties");
         randomKey = new NamespacedKey(plugin, "random");
         maxUsesKey = new NamespacedKey(plugin, "maxUses");
         usesKey = new NamespacedKey(plugin, "uses");
+        this.plugin = plugin;
     }
 
-    public ItemStack createSpecialItem(ItemStack item, Plugin plugin) {
+    public ItemStack createSpecialItem(ItemStack item) {
         ItemStack clonedItem = item.clone();
         ItemMeta meta = clonedItem.getItemMeta();
 
@@ -57,7 +59,7 @@ public class SpecialItems {
         return clonedItem;
     }
 
-    public void setSpecialty(ItemStack item, Plugin plugin, Specialty specialty, boolean enabled) {
+    public void setSpecialty(ItemStack item, Specialty specialty, boolean enabled) {
         ItemMeta meta = item.getItemMeta();
 
         assert meta != null;
@@ -81,7 +83,7 @@ public class SpecialItems {
 
         // add other specialties' lores
         List<String> lores = new ArrayList<>();
-        for (Specialty enabledSpecialty : getSpecialties(item, plugin)) {
+        for (Specialty enabledSpecialty : getSpecialties(item)) {
             lores.add("Specialty: " + ChatColor.RESET.toString() + ChatColor.GOLD.toString() + enabledSpecialty.getLore());
         }
 
@@ -113,7 +115,7 @@ public class SpecialItems {
         item.setItemMeta(meta);
     }
 
-    public List<Specialty> getSpecialties(ItemStack item, Plugin plugin) {
+    public List<Specialty> getSpecialties(ItemStack item) {
         ItemMeta meta = item.getItemMeta();
 
         assert meta != null;
@@ -141,7 +143,7 @@ public class SpecialItems {
         return specialtiesList;
     }
 
-    public boolean isSpecialItem(ItemStack item, Plugin plugin) {
+    public boolean isSpecialItem(ItemStack item) {
         ItemMeta meta = item.getItemMeta();
 
         assert meta != null;
@@ -152,7 +154,7 @@ public class SpecialItems {
         return container.has(key, PersistentDataType.TAG_CONTAINER);
     }
 
-    public void applySpecialProperties(ItemStack item, Plugin plugin) {
+    public void applySpecialProperties(ItemStack item) {
         ItemMeta meta = item.getItemMeta();
 
         assert meta != null;
@@ -187,7 +189,7 @@ public class SpecialItems {
     }
 
     @SuppressWarnings("ConstantConditions")
-    public boolean use(ItemStack item, Plugin plugin) {
+    public boolean use(ItemStack item) {
         ItemMeta meta = item.getItemMeta();
 
         assert meta != null;
@@ -206,7 +208,7 @@ public class SpecialItems {
 
         // add specialties' lores
         List<String> lores = new ArrayList<>();
-        for (Specialty enabledSpecialty : getSpecialties(item, plugin)) {
+        for (Specialty enabledSpecialty : getSpecialties(item)) {
             lores.add("Specialty: " + ChatColor.RESET.toString() + ChatColor.GOLD.toString() + enabledSpecialty.getLore());
         }
 

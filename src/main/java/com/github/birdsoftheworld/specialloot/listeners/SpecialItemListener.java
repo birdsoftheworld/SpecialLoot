@@ -29,7 +29,7 @@ public class SpecialItemListener implements Listener {
         ItemStack item = event.getItem();
 
         if (item != null) {
-            List<Specialty> specialties = specialItems.getSpecialties(item, plugin);
+            List<Specialty> specialties = specialItems.getSpecialties(item);
             for (Specialty specialty : specialties) {
                 // run specialty actions
                 if (specialty instanceof InteractSpecial) {
@@ -39,7 +39,7 @@ public class SpecialItemListener implements Listener {
                         Player player = event.getPlayer();
                         PlayerInventory playerInventory = player.getInventory();
 
-                        boolean itemDestroyed = specialItems.use(item, plugin);
+                        boolean itemDestroyed = specialItems.use(item);
                         player.updateInventory();
 
                         // stop if item broke

@@ -61,15 +61,15 @@ public class AddSpecialty implements TabExecutor {
 
         ItemStack specialItem;
         // make item a special item if it isn't already
-        if(specialItems.isSpecialItem(heldItem, plugin)) {
+        if(specialItems.isSpecialItem(heldItem)) {
             specialItem = heldItem;
         } else {
-            specialItem = specialItems.createSpecialItem(heldItem, plugin);
+            specialItem = specialItems.createSpecialItem(heldItem);
         }
 
-        specialItems.setSpecialty(specialItem, plugin, specialty, true);
+        specialItems.setSpecialty(specialItem, specialty, true);
 
-        specialItems.applySpecialProperties(specialItem, plugin);
+        specialItems.applySpecialProperties(specialItem);
 
         playerInventory.setItemInMainHand(specialItem);
 
