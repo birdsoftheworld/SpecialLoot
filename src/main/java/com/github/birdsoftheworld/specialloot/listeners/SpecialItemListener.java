@@ -50,7 +50,10 @@ public class SpecialItemListener implements Listener {
                             player.getInventory().remove(item);
 
                             // play item breaking sound
-                            player.playSound(player.getLocation(), Sound.ENTITY_ITEM_BREAK, 1f, 1f);
+                            boolean shouldPlayBreakingSound = (boolean) specialty.getPropertyOrDefault("break-sound", false).getValue();
+                            if (shouldPlayBreakingSound) {
+                                player.playSound(player.getLocation(), Sound.ENTITY_ITEM_BREAK, 1f, 1f);
+                            }
                             return;
                         }
                     }

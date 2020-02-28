@@ -7,7 +7,7 @@ import org.bukkit.plugin.Plugin;
 public abstract class Specialty {
     private String name;
     private SpecialtyProperties properties = new SpecialtyProperties();
-    private Plugin plugin;
+    protected Plugin plugin;
 
     public Specialty(Plugin plugin) {
         this.plugin = plugin;
@@ -35,6 +35,10 @@ public abstract class Specialty {
 
     public SpecialtyProperty getProperty(String property) {
         return properties.getProperty(property);
+    }
+
+    public SpecialtyProperty getPropertyOrDefault(String property, Object otherwise) {
+        return properties.getPropertyOrDefault(property, otherwise);
     }
 
     public void setProperty(String property, SpecialtyProperty value) {

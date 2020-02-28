@@ -9,6 +9,10 @@ public class SpecialtyProperties {
         return properties.get(key);
     }
 
+    public SpecialtyProperty getPropertyOrDefault(String key, Object otherwise) {
+        return properties.getOrDefault(key, new SpecialtyProperty(otherwise));
+    }
+
     public void setProperty(String key, SpecialtyProperty property) {
         properties.put(key, property);
     }
