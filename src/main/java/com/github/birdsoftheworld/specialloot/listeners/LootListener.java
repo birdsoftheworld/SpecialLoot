@@ -1,25 +1,17 @@
 package com.github.birdsoftheworld.specialloot.listeners;
 
 import com.github.birdsoftheworld.specialloot.events.LootableBlockCreateEvent;
-import com.github.birdsoftheworld.specialloot.specialties.Specialties;
-import com.github.birdsoftheworld.specialloot.specialties.Specialty;
 import com.github.birdsoftheworld.specialloot.util.SpecialItems;
-import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Container;
-import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.loot.LootContext;
 import org.bukkit.loot.LootTable;
 import org.bukkit.loot.Lootable;
 import org.bukkit.plugin.Plugin;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Random;
 
 public class LootListener implements Listener {
@@ -41,18 +33,17 @@ public class LootListener implements Listener {
         LootTable lootTable = lootable.getLootTable();
 
         LootContext.Builder contextBuilder = new LootContext.Builder(event.getBlock().getLocation());
+
         LootContext context = contextBuilder.build();
 
         assert lootTable != null;
+
+        // this is broken because of a bug in CraftBukkit
         lootTable.fillInventory(inventory, random, context);
 
         int slot = random.nextInt(inventory.getSize() + 1);
 
-        ItemStack generatedItem = specialItems.createSpecialItem(new ItemStack(Material.ENDER_EYE));
-        List<Specialty> specialties = Specialties.values();
-        Collections.shuffle(specialties);
-        specialItems.setSpecialty(generatedItem, specialties.get(0), true);
-        inventory.setItem(slot, generatedItem);
+        // TODO: generate loot
 
         // prevent vanilla populating
         lootable.setLootTable(null);
