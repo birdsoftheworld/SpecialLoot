@@ -17,13 +17,12 @@ import java.util.List;
 
 public class SpecialItems {
     private final NamespacedKey specialtiesKey;
-    private final NamespacedKey randomKey;
     private final NamespacedKey maxUsesKey;
     private final NamespacedKey usesKey;
     private final Plugin plugin;
+
     public SpecialItems(Plugin plugin) {
         specialtiesKey = new NamespacedKey(plugin, "specialties");
-        randomKey = new NamespacedKey(plugin, "random");
         maxUsesKey = new NamespacedKey(plugin, "maxUses");
         usesKey = new NamespacedKey(plugin, "uses");
         this.plugin = plugin;
@@ -68,7 +67,6 @@ public class SpecialItems {
 
         PersistentDataContainer holder = meta.getPersistentDataContainer();
 
-        NamespacedKey specialtiesKey = new NamespacedKey(plugin, "specialties");
         PersistentDataContainer specialtyHolder = holder.get(specialtiesKey, PersistentDataType.TAG_CONTAINER);
 
         // error if item doesn't have the specialties container
@@ -76,7 +74,7 @@ public class SpecialItems {
             throw new IllegalStateException("Item is not a SpecialItem!");
         }
 
-        NamespacedKey key = new NamespacedKey(plugin, specialty.getName());
+        NamespacedKey key = specialty.getKey();
 
         // set if enabled
         specialtyHolder.set(key, PersistentDataType.BYTE, (byte) (enabled ? 1 : 0));
@@ -121,9 +119,12 @@ public class SpecialItems {
         assert meta != null;
         PersistentDataContainer container = meta.getPersistentDataContainer();
 
+        return getSpecialties(container);
+    }
+
+    public List<Specialty> getSpecialties(PersistentDataContainer container) {
         List<Specialty> specialtiesList = new ArrayList<>();
 
-        NamespacedKey specialtiesKey = new NamespacedKey(plugin, "specialties");
         PersistentDataContainer specialtiesContainer = container.get(specialtiesKey, PersistentDataType.TAG_CONTAINER);
 
         // item is not special, thus has no specialties
@@ -149,9 +150,11 @@ public class SpecialItems {
         assert meta != null;
         PersistentDataContainer container = meta.getPersistentDataContainer();
 
-        NamespacedKey key = new NamespacedKey(plugin, "specialties");
+        return isSpecial(container);
+    }
 
-        return container.has(key, PersistentDataType.TAG_CONTAINER);
+    public boolean isSpecial(PersistentDataContainer container) {
+        return container.has(specialtiesKey, PersistentDataType.TAG_CONTAINER);
     }
 
     public void applySpecialProperties(ItemStack item) {
@@ -170,7 +173,7 @@ public class SpecialItems {
         Glint glint = new Glint (enchantmentGlintKey);
 
         for (Specialty specialty : Specialties.values()) {
-            NamespacedKey key = new NamespacedKey(plugin, specialty.getName());
+            NamespacedKey key = specialty.getKey();
 
             // continue if disabled
             @SuppressWarnings("ConstantConditions")

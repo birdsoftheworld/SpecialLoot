@@ -17,3 +17,10 @@ tools:
     glint: true
     max-uses: 10
     config: "tools/BigHole.yml"
+
+bows:
+  ExplodingBow:
+    lore: "Explodes on contact with anything"
+    glint: true
+    max-uses: 3
+    config: "bows/ExplodingBow.yml"

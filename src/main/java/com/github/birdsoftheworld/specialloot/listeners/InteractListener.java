@@ -13,7 +13,7 @@ import org.bukkit.plugin.Plugin;
 
 import java.util.List;
 
-public class InteractListener implements Listener {
+public class InteractListener extends SpecialtyListener implements Listener {
 
     private final SpecialItems specialItems;
 
@@ -34,22 +34,9 @@ public class InteractListener implements Listener {
 
                     if (useDurability) {
                         Player player = event.getPlayer();
-
-                        boolean itemDestroyed = specialItems.use(item);
-                        player.updateInventory();
-
-                        // stop if item broke
-                        if (itemDestroyed) {
+                        if (use(item, player, specialItems, specialty)) {
                             // will crash if event is not cancelled
                             event.setCancelled(true);
-                            player.getInventory().remove(item);
-
-                            // play item breaking sound
-                            boolean shouldPlayBreakingSound = (boolean) specialty.getPropertyOrDefault("break-sound", false).getValue();
-                            if (shouldPlayBreakingSound) {
-                                player.playSound(player.getLocation(), Sound.ENTITY_ITEM_BREAK, 1f, 1f);
-                            }
-                            return;
                         }
                     }
                 }

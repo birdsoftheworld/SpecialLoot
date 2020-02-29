@@ -51,10 +51,8 @@ public class AddSpecialty implements TabExecutor {
         }
 
         // get corresponding specialty
-        Specialty specialty;
-        try {
-            specialty = Specialties.valueOf(strings[0].toUpperCase());
-        } catch (Exception e) {
+        Specialty specialty = Specialties.valueOf(strings[0].toUpperCase());
+        if (specialty == null) {
             player.sendMessage(ChatColor.RED.toString() + "That's not a specialty.");
             return true;
         }
