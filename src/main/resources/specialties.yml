@@ -25,3 +25,9 @@ bows:
     lore: "Arrows explode on contact with anything"
     glint: true
     config: "bows/ExplodingBow.yml"
+
+traps:
+  BlockMine:
+    lore: "Place on a block to make it explode when mined"
+    glint: true
+    config: "traps/BlockMine.yml"
