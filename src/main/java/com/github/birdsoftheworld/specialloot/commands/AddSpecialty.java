@@ -81,6 +81,15 @@ public class AddSpecialty implements TabExecutor {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-        return specialties;
+        List<String> possibleTabCompletions = new ArrayList<>();
+        if (args.length > 0) {
+            for (final String possibleTabCompletion : specialties) {
+                if (possibleTabCompletion.toLowerCase().contains(args[0].toLowerCase())) {
+                    possibleTabCompletions.add(possibleTabCompletion);
+                }
+            }
+        }
+
+        return possibleTabCompletions;
     }
 }
