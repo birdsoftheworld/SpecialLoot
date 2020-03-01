@@ -20,4 +20,13 @@ public class SpecialtyProperties {
     public boolean isDefined(String key) {
         return properties.containsKey(key);
     }
+
+    @Override
+    public SpecialtyProperties clone() {
+        SpecialtyProperties clonedProperties = new SpecialtyProperties();
+        for (String key : properties.keySet()) {
+            clonedProperties.setProperty(key, properties.get(key));
+        }
+        return clonedProperties;
+    }
 }

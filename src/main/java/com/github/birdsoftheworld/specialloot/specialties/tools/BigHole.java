@@ -2,6 +2,7 @@ package com.github.birdsoftheworld.specialloot.specialties.tools;
 
 import com.github.birdsoftheworld.specialloot.specialties.InteractSpecial;
 import com.github.birdsoftheworld.specialloot.specialties.Specialty;
+import com.github.birdsoftheworld.specialloot.util.SpecialtyProperties;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -21,7 +22,7 @@ public class BigHole extends Specialty implements InteractSpecial {
     }
 
     @Override
-    public boolean onInteract(PlayerInteractEvent event) {
+    public boolean onInteract(PlayerInteractEvent event, SpecialtyProperties properties) {
         // only clicks on blocks
         if (!event.getAction().equals(Action.LEFT_CLICK_BLOCK) && !event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
             return false;
@@ -42,7 +43,7 @@ public class BigHole extends Specialty implements InteractSpecial {
         BlockFace face = event.getBlockFace();
         BlockFace away = face.getOppositeFace();
 
-        int range = (int) getPropertyOrDefault("range", 1).getValue();
+        int range = (int) properties.getPropertyOrDefault("range", 1).getValue();
 
         Block middleBlock = block;
 
@@ -50,7 +51,7 @@ public class BigHole extends Specialty implements InteractSpecial {
             middleBlock = middleBlock.getRelative(away);
         }
 
-        destroySurrounding(middleBlock, range, event.getItem());
+        destroySurrounding(middleBlock, range, event.getItem(), properties);
 
         Player player = event.getPlayer();
         player.playSound(player.getLocation(), Sound.BLOCK_STONE_BREAK, 1f, 1f);
@@ -59,12 +60,12 @@ public class BigHole extends Specialty implements InteractSpecial {
     }
 
     @Override
-    public boolean onInteractEntity(PlayerInteractEntityEvent event) {
+    public boolean onInteractEntity(PlayerInteractEntityEvent event, SpecialtyProperties properties) {
         return false;
     }
 
-    private void destroySurrounding(Block block, int range, ItemStack item) {
-        ArrayList blacklist = (ArrayList) getProperty("blacklist").getValue();
+    private void destroySurrounding(Block block, int range, ItemStack item, SpecialtyProperties properties) {
+        ArrayList blacklist = (ArrayList) properties.getProperty("blacklist").getValue();
         for (int x = -range; x <= range; x++) {
             for (int y = -range; y <= range; y++) {
                 for (int z = -range; z <= range; z++) {

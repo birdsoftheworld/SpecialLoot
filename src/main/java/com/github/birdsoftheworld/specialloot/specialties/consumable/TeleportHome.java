@@ -2,6 +2,7 @@ package com.github.birdsoftheworld.specialloot.specialties.consumable;
 
 import com.github.birdsoftheworld.specialloot.specialties.InteractSpecial;
 import com.github.birdsoftheworld.specialloot.specialties.Specialty;
+import com.github.birdsoftheworld.specialloot.util.SpecialtyProperties;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
@@ -18,7 +19,7 @@ public class TeleportHome extends Specialty implements InteractSpecial {
     }
 
     @Override
-    public boolean onInteract(PlayerInteractEvent event) {
+    public boolean onInteract(PlayerInteractEvent event, SpecialtyProperties properties) {
         // only right clicks
         if (event.getAction().equals(Action.LEFT_CLICK_AIR) || event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
             return false;
@@ -45,7 +46,7 @@ public class TeleportHome extends Specialty implements InteractSpecial {
     }
 
     @Override
-    public boolean onInteractEntity(PlayerInteractEntityEvent event) {
+    public boolean onInteractEntity(PlayerInteractEntityEvent event, SpecialtyProperties properties) {
         return false;
     }
 }

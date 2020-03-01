@@ -1,2 +1,10 @@
+max-uses: 3
 knockback: 5
 break-sound: true
+property-sets:
+  weak:
+    max-uses: 5
+    knockback: 2
+  strong:
+    max-uses: 1
+    knockback: 7

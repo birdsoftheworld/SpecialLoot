@@ -31,7 +31,7 @@ public class InteractListener extends SpecialtyListener implements Listener {
             for (Specialty specialty : specialties) {
                 // run specialty actions
                 if (specialty instanceof InteractSpecial) {
-                    boolean useDurability = ((InteractSpecial) specialty).onInteract(event);
+                    boolean useDurability = ((InteractSpecial) specialty).onInteract(event, specialItems.getPropertiesFor(item, specialty));
 
                     if (useDurability) {
                         Player player = event.getPlayer();
@@ -62,7 +62,7 @@ public class InteractListener extends SpecialtyListener implements Listener {
             for (Specialty specialty : specialties) {
                 // run specialty actions
                 if (specialty instanceof InteractSpecial) {
-                    boolean useDurability = ((InteractSpecial) specialty).onInteractEntity(event);
+                    boolean useDurability = ((InteractSpecial) specialty).onInteractEntity(event, specialItems.getPropertiesFor(item, specialty));
 
                     if (useDurability) {
                         if (use(item, player, specialItems, specialty)) {

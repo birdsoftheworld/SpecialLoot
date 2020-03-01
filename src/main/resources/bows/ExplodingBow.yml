@@ -1,1 +1,9 @@
+max-uses: 3
 explosion-power: 4.0
+property-sets:
+  weak:
+    max-uses: 10
+    explosion-power: 1.0
+  strong:
+    max-uses: 1
+    explosion-power: 8.0

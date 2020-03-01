@@ -1,5 +1,6 @@
 package com.github.birdsoftheworld.specialloot.specialties;
 
+import com.github.birdsoftheworld.specialloot.util.SpecialtyProperties;
 import com.github.birdsoftheworld.specialloot.util.SpecialtyProperty;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
@@ -62,10 +63,9 @@ public class Specialties {
         return loadedSpecialty;
     }
 
-    public static void registerSpecialties(Plugin plugin) {
+    public void registerSpecialties(Plugin plugin) {
         loadSpecialtiesConfig(plugin);
         Set<String> keys = specialtiesConfig.getKeys(false);
-        Specialties registerSpecialties = new Specialties(plugin);
 
         for (String key : keys) {
             // refers to top level category, i.e. "singleuse"
@@ -84,63 +84,92 @@ public class Specialties {
                     path = DEFAULT_CLASSPATH;
                 }
 
-                Specialty registeredSpecialty = registerSpecialties.register(categoryKey, path + "." + key);
+                Specialty registeredSpecialty = register(categoryKey, path + "." + key);
 
                 processProperties(configSection, registeredSpecialty, plugin);
             }
         }
     }
 
-    private static void processProperties(ConfigurationSection configSection, Specialty specialty, Plugin plugin) {
+    private void processProperties(ConfigurationSection configSection, Specialty specialty, Plugin plugin) {
         Set<String> propertyKeys = configSection.getKeys(false);
 
         for (String propertyKey : propertyKeys) {
-            if (specialty.getProperties().isDefined(propertyKey)) {
+            if (specialty.getDefaultProperties().isDefined(propertyKey)) {
                 continue;
             }
 
-            if (propertyKey.equals("config")) {
-                String path = (String) configSection.get(propertyKey);
-                assert path != null;
-                File loadedConfigFile = new File(plugin.getDataFolder(), path);
+            switch (propertyKey) {
+                case "config":
+                    String configPath = (String) configSection.get(propertyKey);
 
-                if (!loadedConfigFile.exists()) {
-                    loadedConfigFile.getParentFile().mkdirs();
-                    plugin.saveResource(path, false);
-                }
+                    assert configPath != null;
+                    File loadedConfigFile = new File(plugin.getDataFolder(), configPath);
 
-                YamlConfiguration yamlConfiguration = new YamlConfiguration();
+                    YamlConfiguration config = loadYamlConfiguration(loadedConfigFile, configPath);
+                    if (config == null) {
+                        continue;
+                    }
+                    processProperties(config, specialty, plugin);
+                    break;
 
-                try {
-                    yamlConfiguration.load(loadedConfigFile);
-                } catch (IOException | InvalidConfigurationException e) {
-                    e.printStackTrace();
-                    continue;
-                }
+                case "property-sets":
+                    ConfigurationSection section = configSection.getConfigurationSection(propertyKey);
 
-                processProperties(yamlConfiguration, specialty, plugin);
-            } else {
-                SpecialtyProperty newProperty = new SpecialtyProperty();
-                newProperty.setValue(configSection.get(propertyKey));
+                    assert section != null;
+                    processPropertySets(section, specialty);
+                    break;
 
-                specialty.setProperty(propertyKey, newProperty);
+                default:
+                    SpecialtyProperty newProperty = new SpecialtyProperty();
+                    newProperty.setValue(configSection.get(propertyKey));
+
+                    specialty.setProperty(propertyKey, newProperty);
+                    break;
             }
         }
     }
 
-    private static void loadSpecialtiesConfig(Plugin plugin) {
+    private void processPropertySets(ConfigurationSection section, Specialty specialty) {
+        Set<String> propertySetKeys = section.getKeys(false);
+
+        for (String propertySetName : propertySetKeys) {
+            SpecialtyProperties propertySet = specialty.getDefaultProperties().clone();
+            ConfigurationSection propertySetSection = section.getConfigurationSection(propertySetName);
+
+            assert propertySetSection != null;
+            Set<String> properties = propertySetSection.getKeys(false);
+            for (String property : properties) {
+                SpecialtyProperty newProperty = new SpecialtyProperty();
+                newProperty.setValue(propertySetSection.get(property));
+
+                propertySet.setProperty(property, newProperty);
+            }
+
+            specialty.setProperties(propertySetName, propertySet);
+        }
+    }
+
+    private void loadSpecialtiesConfig(Plugin plugin) {
         File specialtiesConfigFile = new File(plugin.getDataFolder(), "specialties.yml");
-        if (!specialtiesConfigFile.exists()) {
-            specialtiesConfigFile.getParentFile().mkdirs();
-            plugin.saveResource("specialties.yml", false);
+        specialtiesConfig = loadYamlConfiguration(specialtiesConfigFile, "specialties.yml");
+    }
+
+    private YamlConfiguration loadYamlConfiguration(File file, String path) {
+        if (!file.exists()) {
+            file.getParentFile().mkdirs();
+            plugin.saveResource(path, false);
         }
 
-        specialtiesConfig = new YamlConfiguration();
+        YamlConfiguration yamlConfiguration = new YamlConfiguration();
+
         try {
-            specialtiesConfig.load(specialtiesConfigFile);
+            yamlConfiguration.load(file);
         } catch (IOException | InvalidConfigurationException e) {
-            e.printStackTrace();
+            return null;
         }
+
+        return yamlConfiguration;
     }
 
     public static List<Specialty> values() {
@@ -149,13 +178,5 @@ public class Specialties {
 
     public static Specialty valueOf(String specialty) {
         return specialtiesByName.get(specialty.toLowerCase());
-    }
-
-    private static NamespacedKey getKey(String specialtyName) {
-        return getKey(specialtiesByName.getOrDefault(specialtyName, null));
-    }
-
-    public static NamespacedKey getKey(Specialty specialty) {
-        return keys.getOrDefault(specialty, null);
     }
 }

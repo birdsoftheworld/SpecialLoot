@@ -2,6 +2,7 @@ package com.github.birdsoftheworld.specialloot.specialties.consumable;
 
 import com.github.birdsoftheworld.specialloot.specialties.InteractSpecial;
 import com.github.birdsoftheworld.specialloot.specialties.Specialty;
+import com.github.birdsoftheworld.specialloot.util.SpecialtyProperties;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.World;
@@ -22,7 +23,7 @@ public class AirStrike extends Specialty implements InteractSpecial {
     }
 
     @Override
-    public boolean onInteract(PlayerInteractEvent event) {
+    public boolean onInteract(PlayerInteractEvent event, SpecialtyProperties properties) {
         // only right clicks
         if (event.getAction().equals(Action.LEFT_CLICK_AIR) || event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
             return false;
@@ -39,11 +40,11 @@ public class AirStrike extends Specialty implements InteractSpecial {
         final Location playerLocation = player.getLocation();
         final World playerWorld = player.getWorld();
 
-        int explosions = (int) getProperty("explosions").getValue();
-        int interval = (int) getProperty("interval").getValue();
+        int explosions = (int) properties.getProperty("explosions").getValue();
+        int interval = (int) properties.getProperty("interval").getValue();
 
-        int blocksAbove = (int) getProperty("height").getValue();
-        int radius = (int) getProperty("radius").getValue();
+        int blocksAbove = (int) properties.getProperty("height").getValue();
+        int radius = (int) properties.getProperty("radius").getValue();
 
         Random random = new Random();
 
@@ -62,7 +63,7 @@ public class AirStrike extends Specialty implements InteractSpecial {
     }
 
     @Override
-    public boolean onInteractEntity(PlayerInteractEntityEvent event) {
+    public boolean onInteractEntity(PlayerInteractEntityEvent event, SpecialtyProperties properties) {
         return false;
     }
 }

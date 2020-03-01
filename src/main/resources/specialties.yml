@@ -2,31 +2,26 @@ consumable:
   TeleportHome:
     lore: "Teleport to your bed"
     glint: true
-    max-uses: 1
     config: "utility/TeleportHome.yml"
 
   AirStrike:
     lore: "Spawn TNT in the sky"
     glint: true
-    max-uses: 1
     config: "utility/AirStrike.yml"
 
   KnockbackStick:
     lore: "Click an entity to send them flying"
     glint: true
-    max-uses: 2
     config: "utility/KnockbackStick.yml"
 
 tools:
   BigHole:
     lore: "Digs a big hole"
     glint: true
-    max-uses: 10
     config: "tools/BigHole.yml"
 
 bows:
   ExplodingBow:
     lore: "Arrows explode on contact with anything"
     glint: true
-    max-uses: 3
     config: "bows/ExplodingBow.yml"

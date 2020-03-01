@@ -37,7 +37,7 @@ public class AddSpecialty implements TabExecutor {
         }
 
         // require arguments
-        if(strings.length < 1) {
+        if(strings.length < 1 || strings.length > 2) {
             return false;
         }
 
@@ -65,7 +65,12 @@ public class AddSpecialty implements TabExecutor {
             specialItem = specialItems.createSpecialItem(heldItem);
         }
 
-        specialItems.setSpecialty(specialItem, specialty, true);
+        String propertySet = null;
+        if (strings.length == 2) {
+            propertySet = strings[1];
+        }
+
+        specialItems.setSpecialty(specialItem, specialty, true, propertySet);
 
         specialItems.applySpecialProperties(specialItem);
 

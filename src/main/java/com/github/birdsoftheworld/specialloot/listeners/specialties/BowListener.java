@@ -3,6 +3,7 @@ package com.github.birdsoftheworld.specialloot.listeners.specialties;
 import com.github.birdsoftheworld.specialloot.specialties.BowSpecial;
 import com.github.birdsoftheworld.specialloot.specialties.Specialty;
 import com.github.birdsoftheworld.specialloot.util.SpecialItems;
+import com.github.birdsoftheworld.specialloot.util.SpecialtyProperties;
 import org.bukkit.Material;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
@@ -14,15 +15,13 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class BowListener extends SpecialtyListener implements Listener {
 
     private Plugin plugin;
     private SpecialItems specialItems;
-    private HashMap<Entity, List<BowSpecial>> activeProjectiles = new HashMap<>();
+    private HashMap<Entity, HashMap<BowSpecial, SpecialtyProperties>> activeProjectiles = new HashMap<>();
 
     public BowListener(Plugin plugin) {
         this.plugin = plugin;
@@ -47,14 +46,14 @@ public class BowListener extends SpecialtyListener implements Listener {
         }
 
         Entity projectile = event.getProjectile();
-        List<BowSpecial> specialties = new ArrayList<>();
+        HashMap<BowSpecial, SpecialtyProperties> properties = new HashMap<>();
 
         for (Specialty specialty : specialItems.getSpecialties(bow)) {
             if (specialty instanceof BowSpecial) {
                 BowSpecial bowSpecial = (BowSpecial) specialty;
-                specialties.add(bowSpecial);
+                properties.put(bowSpecial, specialItems.getPropertiesFor(bow, specialty));
 
-                boolean useDurability = bowSpecial.onFire(event);
+                boolean useDurability = bowSpecial.onFire(event, specialItems.getPropertiesFor(bow, specialty));
                 if (useDurability) {
                     boolean itemBroke = use(bow, (Player) entity, specialItems, specialty);
                     if (itemBroke) {
@@ -72,7 +71,7 @@ public class BowListener extends SpecialtyListener implements Listener {
             }
         }
 
-        activeProjectiles.put(projectile, specialties);
+        activeProjectiles.put(projectile, properties);
     }
 
     @EventHandler
@@ -83,9 +82,9 @@ public class BowListener extends SpecialtyListener implements Listener {
             return;
         }
 
-        List<BowSpecial> specialties = activeProjectiles.get(projectile);
-        for (BowSpecial specialty : specialties) {
-            specialty.onProjectileHit(event);
+        HashMap<BowSpecial, SpecialtyProperties> specialties = activeProjectiles.get(projectile);
+        for (BowSpecial specialty : specialties.keySet()) {
+            specialty.onProjectileHit(event, specialties.get(specialty));
         }
     }
 
@@ -97,9 +96,9 @@ public class BowListener extends SpecialtyListener implements Listener {
             return;
         }
 
-        List<BowSpecial> specialties = activeProjectiles.get(firework);
-        for (BowSpecial specialty : specialties) {
-            specialty.onFireworkExplode(event);
+        HashMap<BowSpecial, SpecialtyProperties> specialties = activeProjectiles.get(firework);
+        for (BowSpecial specialty : specialties.keySet()) {
+            specialty.onFireworkExplode(event, specialties.get(specialty));
         }
     }
 }

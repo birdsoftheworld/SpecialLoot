@@ -19,12 +19,16 @@ public class SpecialItems {
     private final NamespacedKey specialtiesKey;
     private final NamespacedKey maxUsesKey;
     private final NamespacedKey usesKey;
+    private final NamespacedKey enabledKey;
+    private final NamespacedKey propertySetKey;
     private final Plugin plugin;
 
     public SpecialItems(Plugin plugin) {
         specialtiesKey = new NamespacedKey(plugin, "specialties");
         maxUsesKey = new NamespacedKey(plugin, "maxUses");
         usesKey = new NamespacedKey(plugin, "uses");
+        enabledKey = new NamespacedKey(plugin, "specialtyEnabled");
+        propertySetKey = new NamespacedKey(plugin, "propertySet");
         this.plugin = plugin;
     }
 
@@ -37,11 +41,16 @@ public class SpecialItems {
         PersistentDataAdapterContext context = container.getAdapterContext();
 
         PersistentDataContainer newContainer = context.newPersistentDataContainer();
+        PersistentDataAdapterContext newContainerContext = newContainer.getAdapterContext();
 
         // set all specialties to disabled
         for(Specialty special : Specialties.values()) {
-            NamespacedKey key = new NamespacedKey(plugin, special.getName());
-            newContainer.set(key, PersistentDataType.BYTE, (byte) 0);
+            NamespacedKey key = special.getKey();
+            PersistentDataContainer specialtyContainer = newContainerContext.newPersistentDataContainer();
+
+            specialtyContainer.set(enabledKey, PersistentDataType.BYTE, (byte) 0);
+
+            newContainer.set(key, PersistentDataType.TAG_CONTAINER, specialtyContainer);
         }
 
         // set max uses
@@ -58,7 +67,7 @@ public class SpecialItems {
         return clonedItem;
     }
 
-    public void setSpecialty(ItemStack item, Specialty specialty, boolean enabled) {
+    public void setSpecialty(ItemStack item, Specialty specialty, boolean enabled, String propertySet) {
         ItemMeta meta = item.getItemMeta();
 
         assert meta != null;
@@ -76,8 +85,19 @@ public class SpecialItems {
 
         NamespacedKey key = specialty.getKey();
 
+        PersistentDataContainer propertyHolder = specialtyHolder.get(key, PersistentDataType.TAG_CONTAINER);
+
         // set if enabled
-        specialtyHolder.set(key, PersistentDataType.BYTE, (byte) (enabled ? 1 : 0));
+        assert propertyHolder != null;
+        propertyHolder.set(enabledKey, PersistentDataType.BYTE, (byte) (enabled ? 1 : 0));
+
+        // set propertySet
+        if (propertySet == null) {
+            propertySet = "default";
+        }
+        propertyHolder.set(propertySetKey, PersistentDataType.STRING, propertySet);
+
+        specialtyHolder.set(key, PersistentDataType.TAG_CONTAINER, propertyHolder);
 
         // add other specialties' lores
         List<String> lores = new ArrayList<>();
@@ -91,7 +111,7 @@ public class SpecialItems {
         // set max uses
         @SuppressWarnings("ConstantConditions")
         int currentMaxUses = specialtyHolder.get(maxUsesKey, PersistentDataType.INTEGER);
-        int specialMaxUses = specialty.getMaxUses();
+        int specialMaxUses = specialty.getMaxUses(propertySet);
         int finalMaxUses = Math.min(currentMaxUses, specialMaxUses);
 
         // set current uses
@@ -134,8 +154,12 @@ public class SpecialItems {
 
         // iterate through specialties and check if item has them
         for(Specialty special : Specialties.values()) {
-            NamespacedKey key = new NamespacedKey(plugin, special.getName());
-            byte specialEnabled = specialtiesContainer.getOrDefault(key, PersistentDataType.BYTE, (byte) 0);
+            NamespacedKey key = special.getKey();
+            PersistentDataContainer propertyContainer = specialtiesContainer.get(key, PersistentDataType.TAG_CONTAINER);
+
+            assert propertyContainer != null;
+            byte specialEnabled = propertyContainer.getOrDefault(enabledKey, PersistentDataType.BYTE, (byte) 0);
+
             if(specialEnabled == (byte) 1) {
                 specialtiesList.add(special);
             }
@@ -176,7 +200,7 @@ public class SpecialItems {
         PersistentDataContainer specialtyContainer = container.get(specialtiesKey, PersistentDataType.TAG_CONTAINER);
 
         if (specialtyContainer == null) {
-            throw new IllegalStateException("Item is not a SpecialItem!");
+            throw new IllegalArgumentException("Item is not a SpecialItem!");
         }
 
         NamespacedKey enchantmentGlintKey = new NamespacedKey(plugin, "glint");
@@ -184,21 +208,52 @@ public class SpecialItems {
 
         for (Specialty specialty : Specialties.values()) {
             NamespacedKey key = specialty.getKey();
+            PersistentDataContainer propertyContainer = specialtyContainer.get(key, PersistentDataType.TAG_CONTAINER);
 
             // continue if disabled
             @SuppressWarnings("ConstantConditions")
-            byte enabledByte = specialtyContainer.get(key, PersistentDataType.BYTE);
+            byte enabledByte = propertyContainer.get(enabledKey, PersistentDataType.BYTE);
             if (enabledByte == 0) {
                 continue;
             }
 
-            // add glint
-            if ((boolean) specialty.getProperties().getProperty("glint").getValue()) {
+            SpecialtyProperties properties = getPropertiesFor(item, specialty);
+
+            if ((boolean) properties.getProperty("glint").getValue()) {
+                // add glint
                 meta.addEnchant(glint, 0, true);
             }
         }
 
         item.setItemMeta(meta);
+    }
+
+    public SpecialtyProperties getPropertiesFor(ItemStack item, Specialty specialty) {
+        ItemMeta meta = item.getItemMeta();
+
+        assert meta != null;
+        PersistentDataContainer container = meta.getPersistentDataContainer();
+
+        PersistentDataContainer specialtyContainer = container.get(specialtiesKey, PersistentDataType.TAG_CONTAINER);
+        if (specialtyContainer == null) {
+            throw new IllegalArgumentException("Item is not a SpecialItem!");
+        }
+
+        NamespacedKey key = specialty.getKey();
+        PersistentDataContainer propertyContainer = specialtyContainer.get(key, PersistentDataType.TAG_CONTAINER);
+
+        assert propertyContainer != null;
+        String propertySet = propertyContainer.get(propertySetKey, PersistentDataType.STRING);
+
+        // get property set
+        SpecialtyProperties properties = specialty.getProperties(propertySet);
+
+        // if property set isn't defined, get defaults
+        if (properties == null) {
+            properties = specialty.getDefaultProperties();
+        }
+
+        return properties;
     }
 
     @SuppressWarnings("ConstantConditions")

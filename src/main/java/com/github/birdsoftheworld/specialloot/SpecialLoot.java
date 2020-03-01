@@ -18,7 +18,9 @@ public class SpecialLoot extends JavaPlugin {
     @Override
     public void onEnable() {
         registerCustomEnchantments();
-        Specialties.registerSpecialties(this);
+
+        Specialties specialties = new Specialties(this);
+        specialties.registerSpecialties(this);
 
         Bukkit.getPluginCommand("addspecialty").setExecutor(new AddSpecialty(this));
         Bukkit.getPluginCommand("listspecialties").setExecutor(new ListSpecialties());

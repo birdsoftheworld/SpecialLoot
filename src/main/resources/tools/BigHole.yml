@@ -1,3 +1,4 @@
+max-uses: 10
 range: 1
 blacklist:
   - "BEDROCK"
@@ -7,3 +8,7 @@ blacklist:
   - "OBSIDIAN"
   - "END_GATEWAY"
 break-sound: true
+property-sets:
+  strong:
+    max-uses: 5
+    range: 2
