@@ -20,7 +20,14 @@ tools:
 
 bows:
   ExplodingBow:
-    lore: "Explodes on contact with anything"
+    lore: "Arrows explode on contact with anything"
     glint: true
     max-uses: 3
     config: "bows/ExplodingBow.yml"
+
+shields:
+  HeavyShield:
+    lore: "Anything that hits you will be knocked back a lot"
+    glint: false
+    max-uses: 5
+    config: "shields/HeavyShield.yml"

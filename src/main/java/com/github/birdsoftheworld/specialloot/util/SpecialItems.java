@@ -145,15 +145,25 @@ public class SpecialItems {
     }
 
     public boolean isSpecialItem(ItemStack item) {
+        if (item == null) {
+            return false;
+        }
+
         ItemMeta meta = item.getItemMeta();
 
-        assert meta != null;
+        if (meta == null) {
+            return false;
+        }
+
         PersistentDataContainer container = meta.getPersistentDataContainer();
 
         return isSpecial(container);
     }
 
     public boolean isSpecial(PersistentDataContainer container) {
+        if (container == null) {
+            return false;
+        }
         return container.has(specialtiesKey, PersistentDataType.TAG_CONTAINER);
     }
 

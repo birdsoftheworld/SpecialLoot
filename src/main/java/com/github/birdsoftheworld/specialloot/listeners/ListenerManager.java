@@ -14,6 +14,7 @@ public class ListenerManager {
     public void registerListeners() {
         Bukkit.getPluginManager().registerEvents(new InteractListener(plugin), plugin);
         Bukkit.getPluginManager().registerEvents(new BowListener(plugin), plugin);
+        Bukkit.getPluginManager().registerEvents(new ShieldListener(plugin), plugin);
 
         // can't fix for now
 //        Bukkit.getPluginManager().registerEvents(new LootableBlockCreateListener(), plugin);

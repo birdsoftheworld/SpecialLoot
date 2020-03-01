@@ -1,8 +1,9 @@
 package com.github.birdsoftheworld.specialloot.listeners;
 
-import com.github.birdsoftheworld.specialloot.specialties.BowSpecialty;
+import com.github.birdsoftheworld.specialloot.specialties.BowSpecial;
 import com.github.birdsoftheworld.specialloot.specialties.Specialty;
 import com.github.birdsoftheworld.specialloot.util.SpecialItems;
+import org.bukkit.Material;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -11,6 +12,7 @@ import org.bukkit.event.entity.FireworkExplodeEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,7 +22,7 @@ public class BowListener extends SpecialtyListener implements Listener {
 
     private Plugin plugin;
     private SpecialItems specialItems;
-    private HashMap<Entity, List<BowSpecialty>> activeProjectiles = new HashMap<>();
+    private HashMap<Entity, List<BowSpecial>> activeProjectiles = new HashMap<>();
 
     public BowListener(Plugin plugin) {
         this.plugin = plugin;
@@ -45,17 +47,27 @@ public class BowListener extends SpecialtyListener implements Listener {
         }
 
         Entity projectile = event.getProjectile();
-        List<BowSpecialty> specialties = new ArrayList<>();
+        List<BowSpecial> specialties = new ArrayList<>();
 
         for (Specialty specialty : specialItems.getSpecialties(bow)) {
-            if (specialty instanceof BowSpecialty) {
-                BowSpecialty bowSpecialty = (BowSpecialty) specialty;
-                specialties.add(bowSpecialty);
+            if (specialty instanceof BowSpecial) {
+                BowSpecial bowSpecial = (BowSpecial) specialty;
+                specialties.add(bowSpecial);
 
-                boolean useDurability = bowSpecialty.onFire(event);
+                boolean useDurability = bowSpecial.onFire(event);
                 if (useDurability) {
-                    // FIXME: Crossbows don't break
-                    use(bow, (Player) entity, specialItems, specialty);
+                    boolean itemBroke = use(bow, (Player) entity, specialItems, specialty);
+                    if (itemBroke) {
+                        // hack to remove crossbows 1 tick later because they somehow get re-added if removed
+                        if (bow.getType().equals(Material.CROSSBOW)) {
+                            new BukkitRunnable() {
+                                @Override
+                                public void run() {
+                                    ((Player) entity).getInventory().remove(bow);
+                                }
+                            }.runTaskLater(plugin, 1);
+                        }
+                    }
                 }
             }
         }
@@ -71,8 +83,8 @@ public class BowListener extends SpecialtyListener implements Listener {
             return;
         }
 
-        List<BowSpecialty> specialties = activeProjectiles.get(projectile);
-        for (BowSpecialty specialty : specialties) {
+        List<BowSpecial> specialties = activeProjectiles.get(projectile);
+        for (BowSpecial specialty : specialties) {
             specialty.onProjectileHit(event);
         }
     }
@@ -85,8 +97,8 @@ public class BowListener extends SpecialtyListener implements Listener {
             return;
         }
 
-        List<BowSpecialty> specialties = activeProjectiles.get(firework);
-        for (BowSpecialty specialty : specialties) {
+        List<BowSpecial> specialties = activeProjectiles.get(firework);
+        for (BowSpecial specialty : specialties) {
             specialty.onFireworkExplode(event);
         }
     }

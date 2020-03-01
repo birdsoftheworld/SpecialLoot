@@ -1,6 +1,6 @@
 package com.github.birdsoftheworld.specialloot.specialties.bows;
 
-import com.github.birdsoftheworld.specialloot.specialties.BowSpecialty;
+import com.github.birdsoftheworld.specialloot.specialties.BowSpecial;
 import com.github.birdsoftheworld.specialloot.specialties.Specialty;
 import org.bukkit.Color;
 import org.bukkit.Location;
@@ -13,7 +13,7 @@ import org.bukkit.event.entity.FireworkExplodeEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.plugin.Plugin;
 
-public class ExplodingBow extends Specialty implements BowSpecialty {
+public class ExplodingBow extends Specialty implements BowSpecial {
 
     public ExplodingBow(Plugin plugin) {
         super(plugin);
