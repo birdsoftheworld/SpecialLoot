@@ -1,4 +1,4 @@
-package com.github.birdsoftheworld.specialloot.listeners;
+package com.github.birdsoftheworld.specialloot.listeners.specialties;
 
 import com.github.birdsoftheworld.specialloot.specialties.BowSpecial;
 import com.github.birdsoftheworld.specialloot.specialties.Specialty;

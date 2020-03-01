@@ -7,6 +7,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
@@ -55,6 +56,11 @@ public class BigHole extends Specialty implements InteractSpecial {
         player.playSound(player.getLocation(), Sound.BLOCK_STONE_BREAK, 1f, 1f);
 
         return true;
+    }
+
+    @Override
+    public boolean onInteractEntity(PlayerInteractEntityEvent event) {
+        return false;
     }
 
     private void destroySurrounding(Block block, int range, ItemStack item) {

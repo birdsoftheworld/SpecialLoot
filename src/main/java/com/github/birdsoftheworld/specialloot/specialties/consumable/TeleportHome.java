@@ -1,4 +1,4 @@
-package com.github.birdsoftheworld.specialloot.specialties.singleuse;
+package com.github.birdsoftheworld.specialloot.specialties.consumable;
 
 import com.github.birdsoftheworld.specialloot.specialties.InteractSpecial;
 import com.github.birdsoftheworld.specialloot.specialties.Specialty;
@@ -7,6 +7,7 @@ import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.plugin.Plugin;
@@ -41,5 +42,10 @@ public class TeleportHome extends Specialty implements InteractSpecial {
         player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1f, 1f);
 
         return true;
+    }
+
+    @Override
+    public boolean onInteractEntity(PlayerInteractEntityEvent event) {
+        return false;
     }
 }

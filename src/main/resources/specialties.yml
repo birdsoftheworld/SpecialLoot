@@ -1,4 +1,4 @@
-singleuse:
+consumable:
   TeleportHome:
     lore: "Teleport to your bed"
     glint: true
@@ -10,6 +10,12 @@ singleuse:
     glint: true
     max-uses: 1
     config: "utility/AirStrike.yml"
+
+  KnockbackStick:
+    lore: "Click an entity to send them flying"
+    glint: true
+    max-uses: 2
+    config: "utility/KnockbackStick.yml"
 
 tools:
   BigHole:
@@ -24,10 +30,3 @@ bows:
     glint: true
     max-uses: 3
     config: "bows/ExplodingBow.yml"
-
-shields:
-  HeavyShield:
-    lore: "Anything that hits you will be knocked back a lot"
-    glint: false
-    max-uses: 5
-    config: "shields/HeavyShield.yml"

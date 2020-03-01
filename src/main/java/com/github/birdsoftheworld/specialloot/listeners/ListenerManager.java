@@ -1,6 +1,7 @@
 package com.github.birdsoftheworld.specialloot.listeners;
 
-import com.github.birdsoftheworld.specialloot.events.LootableBlockCreateListener;
+import com.github.birdsoftheworld.specialloot.listeners.specialties.BowListener;
+import com.github.birdsoftheworld.specialloot.listeners.specialties.InteractListener;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
@@ -12,9 +13,9 @@ public class ListenerManager {
     }
 
     public void registerListeners() {
+        // for specialties
         Bukkit.getPluginManager().registerEvents(new InteractListener(plugin), plugin);
         Bukkit.getPluginManager().registerEvents(new BowListener(plugin), plugin);
-        Bukkit.getPluginManager().registerEvents(new ShieldListener(plugin), plugin);
 
         // can't fix for now
 //        Bukkit.getPluginManager().registerEvents(new LootableBlockCreateListener(), plugin);
