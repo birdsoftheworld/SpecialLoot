@@ -2,12 +2,22 @@ package com.github.birdsoftheworld.specialloot.specialties;
 
 import com.github.birdsoftheworld.specialloot.util.SpecialtyProperties;
 import com.github.birdsoftheworld.specialloot.util.SpecialtyProperty;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.plugin.Plugin;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public abstract class Specialty {
+
+    private List<String[]> recipes = new ArrayList<>();
+    private HashMap<String[], Material> recipeProducts = new HashMap<>();
+    private HashMap<String[], String> recipePropertySets = new HashMap<>();
+    private HashMap<String[], HashMap<String, Material>> recipeKeys = new HashMap<>();
+    private HashMap<String[], String> recipeNames = new HashMap<>();
+
     private String name;
     private NamespacedKey key;
     private SpecialtyProperties defaultProperties = new SpecialtyProperties();
@@ -69,5 +79,33 @@ public abstract class Specialty {
 
     public NamespacedKey getKey() {
         return key;
+    }
+
+    void addCraftingRecipe(Material produces, String propertySet, String[] recipeString, HashMap<String, Material> key, String name) {
+        recipes.add(recipeString);
+        recipeProducts.put(recipeString, produces);
+        recipePropertySets.put(recipeString, propertySet);
+        recipeKeys.put(recipeString, key);
+        recipeNames.put(recipeString, name);
+    }
+
+    public List<String[]> getRecipes() {
+        return recipes;
+    }
+
+    public Material getRecipeProduct(String[] recipe) {
+        return recipeProducts.get(recipe);
+    }
+
+    public String getRecipeProperties(String[] recipe) {
+        return recipePropertySets.get(recipe);
+    }
+
+    public HashMap<String, Material> getRecipeKey(String[] recipe) {
+        return recipeKeys.get(recipe);
+    }
+
+    public String getRecipeName(String[] recipe) {
+        return recipeNames.get(recipe);
     }
 }

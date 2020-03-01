@@ -5,5 +5,33 @@ property-sets:
     max-uses: 10
     explosion-power: 1.0
   strong:
-    max-uses: 1
+    max-uses: 2
     explosion-power: 8.0
+recipes:
+  bow-weak:
+    rt: "ks "
+    rm: "kgs"
+    rb: "ks "
+    set: "weak"
+    produces: "BOW"
+    k: "STICK"
+    g: "GUNPOWDER"
+    s: "STRING"
+  bow-standard:
+    rt: "ks "
+    rm: "kts"
+    rb: "ks "
+    set: "default"
+    produces: "BOW"
+    k: "STICK"
+    t: "TNT"
+    s: "STRING"
+  bow-strong:
+    rt: "gtg"
+    rm: "tbt"
+    rb: "gtg"
+    set: "strong"
+    produces: "BOW"
+    g: "GUNPOWDER"
+    t: "TNT"
+    b: "BOW"

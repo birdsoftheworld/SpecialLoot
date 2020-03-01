@@ -74,6 +74,8 @@ public class AddSpecialty implements TabExecutor {
 
         specialItems.applySpecialProperties(specialItem);
 
+        specialItems.makeUnstackable(specialItem);
+
         playerInventory.setItemInMainHand(specialItem);
 
         return true;

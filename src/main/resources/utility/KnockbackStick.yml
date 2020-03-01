@@ -8,3 +8,33 @@ property-sets:
   strong:
     max-uses: 1
     knockback: 7
+recipes:
+  stick-weak:
+    rt: "csc"
+    rm: "iwi"
+    rb: "csc"
+    produces: "STICK"
+    set: "weak"
+    c: "COBBLESTONE"
+    i: "IRON_INGOT"
+    s: "STICK"
+    w: "IRON_SWORD"
+  stick-standard:
+    rt: "gsg"
+    rm: "rwr"
+    rb: "gsg"
+    produces: "STICK"
+    set: "default"
+    g: "GOLD_INGOT"
+    s: "STICK"
+    w: "IRON_SWORD"
+    r: "REDSTONE"
+  stick-strong:
+    rt: "gig"
+    rm: "idi"
+    rb: "gig"
+    produces: "STICK"
+    set: "strong"
+    g: "GOLD_INGOT"
+    i: "IRON_INGOT"
+    d: "DIAMOND_SWORD"

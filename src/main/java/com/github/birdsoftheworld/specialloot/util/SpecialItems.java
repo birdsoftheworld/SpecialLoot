@@ -14,11 +14,13 @@ import org.bukkit.plugin.Plugin;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class SpecialItems {
     private final NamespacedKey specialtiesKey;
     private final NamespacedKey maxUsesKey;
     private final NamespacedKey usesKey;
+    private final NamespacedKey randomKey;
     private final NamespacedKey enabledKey;
     private final NamespacedKey propertySetKey;
     private final Plugin plugin;
@@ -27,6 +29,7 @@ public class SpecialItems {
         specialtiesKey = new NamespacedKey(plugin, "specialties");
         maxUsesKey = new NamespacedKey(plugin, "maxUses");
         usesKey = new NamespacedKey(plugin, "uses");
+        randomKey = new NamespacedKey(plugin, "random");
         enabledKey = new NamespacedKey(plugin, "specialtyEnabled");
         propertySetKey = new NamespacedKey(plugin, "propertySet");
         this.plugin = plugin;
@@ -267,7 +270,7 @@ public class SpecialItems {
 
         int currentUses = specialtyContainer.get(usesKey, PersistentDataType.INTEGER);
         int maxUses = specialtyContainer.get(maxUsesKey, PersistentDataType.INTEGER);
-        int finalUses = Math.min(currentUses, maxUses) - 1;
+        int finalUses = currentUses - 1;
 
         specialtyContainer.set(usesKey, PersistentDataType.INTEGER, finalUses);
 
@@ -287,5 +290,44 @@ public class SpecialItems {
         item.setItemMeta(meta);
 
         return finalUses <= 0;
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    public void setUses(ItemStack item, int uses) {
+        ItemMeta meta = item.getItemMeta();
+
+        assert meta != null;
+        PersistentDataContainer container = meta.getPersistentDataContainer();
+
+        PersistentDataContainer specialtyContainer = container.get(specialtiesKey, PersistentDataType.TAG_CONTAINER);
+        int maxUses = specialtyContainer.get(maxUsesKey, PersistentDataType.INTEGER);
+
+        specialtyContainer.set(usesKey, PersistentDataType.INTEGER, uses);
+
+        // save uses
+        container.set(specialtiesKey, PersistentDataType.TAG_CONTAINER, specialtyContainer);
+
+        // add specialties' lores
+        List<String> lores = new ArrayList<>();
+        for (Specialty enabledSpecialty : getSpecialties(item)) {
+            lores.add("Specialty: " + ChatColor.RESET.toString() + ChatColor.GOLD.toString() + enabledSpecialty.getLore());
+        }
+
+        lores.add(ChatColor.AQUA.toString() + "Uses: " + uses + " / " + maxUses);
+
+        meta.setLore(lores);
+
+        item.setItemMeta(meta);
+    }
+
+    public void makeUnstackable(ItemStack item) {
+        ItemMeta meta = item.getItemMeta();
+
+        assert meta != null;
+        PersistentDataContainer holder = meta.getPersistentDataContainer();
+
+        holder.set(randomKey, PersistentDataType.STRING, UUID.randomUUID().toString());
+
+        item.setItemMeta(meta);
     }
 }

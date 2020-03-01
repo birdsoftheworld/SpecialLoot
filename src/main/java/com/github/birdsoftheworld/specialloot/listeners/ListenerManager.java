@@ -19,6 +19,9 @@ public class ListenerManager {
         Bukkit.getPluginManager().registerEvents(new BowListener(plugin), plugin);
         Bukkit.getPluginManager().registerEvents(new BlockListener(), plugin);
 
+        // for crafting
+        Bukkit.getPluginManager().registerEvents(new CraftingListener(plugin), plugin);
+
         // can't fix for now
 //        Bukkit.getPluginManager().registerEvents(new LootableBlockCreateListener(), plugin);
 //        Bukkit.getPluginManager().registerEvents(new LootListener(plugin), plugin);

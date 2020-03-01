@@ -1,2 +1,11 @@
 max-uses: 1
 explosion-power: 5.0
+recipes:
+  mine-standard:
+    rt: "ccc"
+    rm: "ctc"
+    rb: "ccc"
+    set: "default"
+    produces: "TNT"
+    c: "COBBLESTONE"
+    t: "TNT"

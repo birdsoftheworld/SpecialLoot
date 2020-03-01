@@ -12,3 +12,22 @@ property-sets:
   strong:
     max-uses: 5
     range: 2
+recipes:
+  hole-standard:
+    rt: "cpc"
+    rm: "psp"
+    rb: "cpc"
+    produces: "IRON_PICKAXE"
+    set: "default"
+    c: "COBBLESTONE"
+    p: "IRON_PICKAXE"
+    s: "IRON_SHOVEL"
+  hole-strong:
+    rt: "nin"
+    rm: "idi"
+    rb: "nin"
+    produces: "DIAMOND_PICKAXE"
+    set: "strong"
+    n: "IRON_INGOT"
+    i: "IRON_PICKAXE"
+    d: "DIAMOND_PICKAXE"

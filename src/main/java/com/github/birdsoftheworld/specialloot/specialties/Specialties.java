@@ -1,7 +1,9 @@
 package com.github.birdsoftheworld.specialloot.specialties;
 
+import com.github.birdsoftheworld.specialloot.crafting.CraftingManager;
 import com.github.birdsoftheworld.specialloot.util.SpecialtyProperties;
 import com.github.birdsoftheworld.specialloot.util.SpecialtyProperty;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -49,7 +51,7 @@ public class Specialties {
         }
 
         if (!(loadedInstance instanceof Specialty)) {
-            throw new IllegalStateException("List Specialty doesn't extend Specialty!");
+            throw new IllegalStateException("Listed Specialty doesn't extend Specialty!");
         }
 
         Specialty loadedSpecialty = (Specialty) loadedInstance;
@@ -120,6 +122,13 @@ public class Specialties {
                     processPropertySets(section, specialty);
                     break;
 
+                case "recipes":
+                    ConfigurationSection recipeSection = configSection.getConfigurationSection(propertyKey);
+
+                    assert recipeSection != null;
+                    processRecipes(recipeSection, specialty);
+                    break;
+
                 default:
                     SpecialtyProperty newProperty = new SpecialtyProperty();
                     newProperty.setValue(configSection.get(propertyKey));
@@ -147,6 +156,38 @@ public class Specialties {
             }
 
             specialty.setProperties(propertySetName, propertySet);
+        }
+    }
+
+    private void processRecipes(ConfigurationSection section, Specialty specialty) {
+        Set<String> recipeKeys = section.getKeys(false);
+
+        for (String recipe : recipeKeys) {
+            ConfigurationSection recipeSection = section.getConfigurationSection(recipe);
+
+            assert recipeSection != null;
+            String[] recipeString = new String[3];
+            recipeString[0] = recipeSection.getString("rt");
+            recipeString[1] = recipeSection.getString("rm");
+            recipeString[2] = recipeSection.getString("rb");
+
+            String propertySet = recipeSection.getString("set");
+            Material produces = Material.valueOf(recipeSection.getString("produces"));
+
+            Set<String> ingredients = recipeSection.getKeys(false);
+            HashMap<String, Material> materialKey = new HashMap<>();
+
+            for (String ingredient : ingredients) {
+                if (ingredient.length() != 1) {
+                    continue;
+                }
+
+                Material value = Material.valueOf(recipeSection.getString(ingredient));
+
+                materialKey.put(ingredient, value);
+            }
+
+            specialty.addCraftingRecipe(produces, propertySet, recipeString, materialKey, recipe);
         }
     }
 

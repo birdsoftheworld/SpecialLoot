@@ -2,6 +2,7 @@ package com.github.birdsoftheworld.specialloot;
 
 import com.github.birdsoftheworld.specialloot.commands.AddSpecialty;
 import com.github.birdsoftheworld.specialloot.commands.ListSpecialties;
+import com.github.birdsoftheworld.specialloot.crafting.CraftingManager;
 import com.github.birdsoftheworld.specialloot.enchantments.Glint;
 import com.github.birdsoftheworld.specialloot.listeners.ListenerManager;
 import com.github.birdsoftheworld.specialloot.specialties.Specialties;
@@ -27,6 +28,9 @@ public class SpecialLoot extends JavaPlugin {
 
         ListenerManager listenerManager = new ListenerManager(this);
         listenerManager.registerListeners();
+
+        CraftingManager craftingManager = new CraftingManager(this);
+        craftingManager.registerRecipes();
     }
 
     private void registerCustomEnchantments() {
