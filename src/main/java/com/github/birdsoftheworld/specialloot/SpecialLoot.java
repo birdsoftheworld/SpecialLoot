@@ -1,6 +1,5 @@
 package com.github.birdsoftheworld.specialloot;
 
-import com.github.birdsoftheworld.specialloot.commands.AddPropertySet;
 import com.github.birdsoftheworld.specialloot.commands.AddSpecialty;
 import com.github.birdsoftheworld.specialloot.commands.ListSpecialties;
 import com.github.birdsoftheworld.specialloot.crafting.CraftingManager;
@@ -26,7 +25,6 @@ public class SpecialLoot extends JavaPlugin {
 
         Bukkit.getPluginCommand("addspecialty").setExecutor(new AddSpecialty(this));
         Bukkit.getPluginCommand("listspecialties").setExecutor(new ListSpecialties());
-        Bukkit.getPluginCommand("addpropertyset").setExecutor(new AddPropertySet());
 
         ListenerManager listenerManager = new ListenerManager(this);
         listenerManager.registerListeners();
