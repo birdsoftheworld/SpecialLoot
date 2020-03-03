@@ -102,6 +102,7 @@ public class Specialties {
             }
 
             switch (propertyKey) {
+
                 case "config":
                     String configPath = (String) configSection.get(propertyKey);
 
@@ -129,6 +130,10 @@ public class Specialties {
                     processRecipes(recipeSection, specialty);
                     break;
 
+                case "enabled":
+                    // whether the specialty is enabled
+                    boolean enabled = configSection.getBoolean(propertyKey);
+                    specialty.setEnabled(enabled);
                 default:
                     SpecialtyProperty newProperty = new SpecialtyProperty();
                     newProperty.setValue(configSection.get(propertyKey));
@@ -140,6 +145,7 @@ public class Specialties {
     }
 
     private void processPropertySets(ConfigurationSection section, Specialty specialty) {
+        // property sets are notated by a "property-sets" key
         Set<String> propertySetKeys = section.getKeys(false);
 
         for (String propertySetName : propertySetKeys) {
@@ -167,17 +173,22 @@ public class Specialties {
 
             assert recipeSection != null;
             String[] recipeString = new String[3];
+            // Recipe Top, Recipe Middle, Recipe Bottom
             recipeString[0] = recipeSection.getString("rt");
             recipeString[1] = recipeSection.getString("rm");
             recipeString[2] = recipeSection.getString("rb");
 
-            String propertySet = recipeSection.getString("set");
+            // item type made by the recipe
             Material produces = Material.valueOf(recipeSection.getString("produces"));
+
+            // property set for the specialty
+            String propertySet = recipeSection.getString("set");
 
             Set<String> ingredients = recipeSection.getKeys(false);
             HashMap<String, Material> materialKey = new HashMap<>();
 
             for (String ingredient : ingredients) {
+                // single characters that represent recipe ingredients
                 if (ingredient.length() != 1) {
                     continue;
                 }
@@ -192,11 +203,13 @@ public class Specialties {
     }
 
     private void loadSpecialtiesConfig(Plugin plugin) {
+        // default config
         File specialtiesConfigFile = new File(plugin.getDataFolder(), "specialties.yml");
         specialtiesConfig = loadYamlConfiguration(specialtiesConfigFile, "specialties.yml");
     }
 
     private YamlConfiguration loadYamlConfiguration(File file, String path) {
+        // if file doesn't exist, create its directories and replace it with the default
         if (!file.exists()) {
             file.getParentFile().mkdirs();
             plugin.saveResource(path, false);

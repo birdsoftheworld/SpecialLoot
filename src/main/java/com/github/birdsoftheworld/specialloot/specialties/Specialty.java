@@ -24,6 +24,8 @@ public abstract class Specialty {
     protected Plugin plugin;
     private HashMap<String, SpecialtyProperties> propertySets = new HashMap<>();
 
+    private boolean enabled;
+
     public Specialty(Plugin plugin) {
         this.plugin = plugin;
     }
@@ -32,9 +34,17 @@ public abstract class Specialty {
         return name;
     }
 
-    public void setName(String name) {
+    void setName(String name) {
         this.name = name;
         this.key = new NamespacedKey(plugin, name);
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
     public String getLore() {

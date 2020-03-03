@@ -1,6 +1,7 @@
 max-uses: 1
 radius: 3
 block: "DIRT"
+set-lore: "block: dirt"
 
 recipes:
   bomb-dirt:

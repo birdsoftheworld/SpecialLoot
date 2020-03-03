@@ -1,13 +1,18 @@
 max-uses: 3
 knockback: 5
 break-sound: true
+set-lore: "knockback: medium"
+
 property-sets:
   weak:
     max-uses: 5
     knockback: 2
+    set-lore: "knockback: weak"
   strong:
     max-uses: 1
     knockback: 7
+    set-lore: "knockback: strong"
+
 recipes:
   stick-weak:
     rt: "csc"

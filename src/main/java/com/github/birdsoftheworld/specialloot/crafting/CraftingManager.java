@@ -29,14 +29,29 @@ public class CraftingManager {
         List<Specialty> specialties = Specialties.values();
 
         for (Specialty specialty : specialties) {
+
+            // ignore disabled specialties
+            if (specialty.isEnabled()) {
+                continue;
+            }
+
+            // get recipes for specialty
             List<String[]> recipes = specialty.getRecipes();
 
-            for (String[] recipeString : recipes) {
-                SpecialItems specialItems = new SpecialItems(plugin);
+            SpecialItems specialItems = new SpecialItems(plugin);
 
+            for (String[] recipeString : recipes) {
+
+                // item to be crafted
                 ItemStack item = new ItemStack(specialty.getRecipeProduct(recipeString));
+
+                // make special
                 ItemStack specialItem = specialItems.createSpecialItem(item);
+
+                // set specialty
                 specialItems.setSpecialty(specialItem, specialty, true, specialty.getRecipeProperties(recipeString));
+
+                // apply properties (i.e. enchantment glint)
                 specialItems.applySpecialProperties(specialItem);
 
                 ShapedRecipe recipe = new ShapedRecipe(new NamespacedKey(plugin, specialty.getRecipeName(recipeString)), specialItem);

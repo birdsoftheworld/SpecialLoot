@@ -111,6 +111,14 @@ public class SpecialItems {
         // add current specialty's lore
         lores.add("Specialty: " + ChatColor.RESET.toString() + ChatColor.GOLD.toString() + specialty.getLore());
 
+        SpecialtyProperties properties = specialty.getProperties(propertySet);
+        if (properties == null) {
+            properties = specialty.getDefaultProperties();
+        }
+        if (properties.isDefined("set-lore")) {
+            lores.add("  - " + properties.getProperty("set-lore").getValue());
+        }
+
         // set max uses
         @SuppressWarnings("ConstantConditions")
         int currentMaxUses = specialtyHolder.get(maxUsesKey, PersistentDataType.INTEGER);
@@ -281,6 +289,13 @@ public class SpecialItems {
         List<String> lores = new ArrayList<>();
         for (Specialty enabledSpecialty : getSpecialties(item)) {
             lores.add("Specialty: " + ChatColor.RESET.toString() + ChatColor.GOLD.toString() + enabledSpecialty.getLore());
+            SpecialtyProperties properties = getPropertiesFor(item, enabledSpecialty);
+            if (properties == null) {
+                properties = enabledSpecialty.getDefaultProperties();
+            }
+            if (properties != null && properties.isDefined("set-lore")) {
+                lores.add("  - " + properties.getProperty("set-lore").getValue());
+            }
         }
 
         lores.add(ChatColor.AQUA.toString() + "Uses: " + finalUses + " / " + maxUses);
@@ -311,6 +326,13 @@ public class SpecialItems {
         List<String> lores = new ArrayList<>();
         for (Specialty enabledSpecialty : getSpecialties(item)) {
             lores.add("Specialty: " + ChatColor.RESET.toString() + ChatColor.GOLD.toString() + enabledSpecialty.getLore());
+            SpecialtyProperties properties = getPropertiesFor(item, enabledSpecialty);
+            if (properties == null) {
+                properties = enabledSpecialty.getDefaultProperties();
+            }
+            if (properties.isDefined("set-lore")) {
+                lores.add("  - " + properties.getProperty("set-lore").getValue());
+            }
         }
 
         lores.add(ChatColor.AQUA.toString() + "Uses: " + uses + " / " + maxUses);

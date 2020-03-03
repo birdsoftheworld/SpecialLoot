@@ -43,7 +43,14 @@ public class SpecialLoot extends JavaPlugin {
         }
 
         try {
-            Glint glint = new Glint(new NamespacedKey(this, "glint"));
+            NamespacedKey key = new NamespacedKey(this, "glint");
+
+            // if enchantment is already defined, we can skip re-defining it
+            if (Enchantment.getByKey(key) != null) {
+                return;
+            }
+
+            Glint glint = new Glint(key);
             Enchantment.registerEnchantment(glint);
         } catch (Exception e) {
             e.printStackTrace();
