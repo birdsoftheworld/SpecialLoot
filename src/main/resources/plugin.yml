@@ -9,8 +9,12 @@ commands:
   listspecialties:
     usage: /listspecialties
     permission: specialloot.listspecialties
+  addpropertyset:
+    usage: /addpropertyset <specialty> <set> [property] [value]...
 permissions:
   specialloot.changespecialties:
     default: op
   specialloot.listspecialties:
     default: true
+  specialloot.addtemppropertyset:
+    default: op

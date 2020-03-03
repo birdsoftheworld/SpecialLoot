@@ -7,7 +7,7 @@ property-sets:
     explosion-power: 1.0
     set-lore: "explosion: weak"
   strong:
-    max-uses: 2
+    max-uses: 1
     explosion-power: 8.0
     set-lore: "explosion: strong"
 recipes:

@@ -102,23 +102,6 @@ public class SpecialItems {
 
         specialtyHolder.set(key, PersistentDataType.TAG_CONTAINER, propertyHolder);
 
-        // add other specialties' lores
-        List<String> lores = new ArrayList<>();
-        for (Specialty enabledSpecialty : getSpecialties(item)) {
-            lores.add("Specialty: " + ChatColor.RESET.toString() + ChatColor.GOLD.toString() + enabledSpecialty.getLore());
-        }
-
-        // add current specialty's lore
-        lores.add("Specialty: " + ChatColor.RESET.toString() + ChatColor.GOLD.toString() + specialty.getLore());
-
-        SpecialtyProperties properties = specialty.getProperties(propertySet);
-        if (properties == null) {
-            properties = specialty.getDefaultProperties();
-        }
-        if (properties.isDefined("set-lore")) {
-            lores.add("  - " + properties.getProperty("set-lore").getValue());
-        }
-
         // set max uses
         @SuppressWarnings("ConstantConditions")
         int currentMaxUses = specialtyHolder.get(maxUsesKey, PersistentDataType.INTEGER);
@@ -134,14 +117,11 @@ public class SpecialItems {
         specialtyHolder.set(maxUsesKey, PersistentDataType.INTEGER, finalMaxUses);
         specialtyHolder.set(usesKey, PersistentDataType.INTEGER, finalUses);
 
-        // set lores for uses
-        lores.add(ChatColor.AQUA.toString() + "Uses: " + finalUses + " / " + finalMaxUses);
-
         holder.set(specialtiesKey, PersistentDataType.TAG_CONTAINER, specialtyHolder);
 
-        meta.setLore(lores);
-
         item.setItemMeta(meta);
+
+        applySpecialProperties(item);
     }
 
     public List<Specialty> getSpecialties(ItemStack item) {
@@ -236,6 +216,26 @@ public class SpecialItems {
             }
         }
 
+        // add specialties' lores
+        List<String> lores = new ArrayList<>();
+        for (Specialty enabledSpecialty : getSpecialties(item)) {
+            lores.add("Specialty: " + ChatColor.RESET.toString() + ChatColor.GOLD.toString() + enabledSpecialty.getLore());
+            SpecialtyProperties properties = getPropertiesFor(item, enabledSpecialty);
+            if (properties == null) {
+                properties = enabledSpecialty.getDefaultProperties();
+            }
+            if (properties != null && properties.isDefined("set-lore")) {
+                lores.add("  - " + properties.getProperty("set-lore").getValue());
+            }
+        }
+
+        Integer finalUses = specialtyContainer.get(usesKey, PersistentDataType.INTEGER);
+        Integer maxUses = specialtyContainer.get(maxUsesKey, PersistentDataType.INTEGER);
+
+        lores.add(ChatColor.AQUA.toString() + "Uses: " + finalUses + " / " + maxUses);
+
+        meta.setLore(lores);
+
         item.setItemMeta(meta);
     }
 
@@ -277,7 +277,6 @@ public class SpecialItems {
         PersistentDataContainer specialtyContainer = container.get(specialtiesKey, PersistentDataType.TAG_CONTAINER);
 
         int currentUses = specialtyContainer.get(usesKey, PersistentDataType.INTEGER);
-        int maxUses = specialtyContainer.get(maxUsesKey, PersistentDataType.INTEGER);
         int finalUses = currentUses - 1;
 
         specialtyContainer.set(usesKey, PersistentDataType.INTEGER, finalUses);
@@ -285,24 +284,9 @@ public class SpecialItems {
         // save uses
         container.set(specialtiesKey, PersistentDataType.TAG_CONTAINER, specialtyContainer);
 
-        // add specialties' lores
-        List<String> lores = new ArrayList<>();
-        for (Specialty enabledSpecialty : getSpecialties(item)) {
-            lores.add("Specialty: " + ChatColor.RESET.toString() + ChatColor.GOLD.toString() + enabledSpecialty.getLore());
-            SpecialtyProperties properties = getPropertiesFor(item, enabledSpecialty);
-            if (properties == null) {
-                properties = enabledSpecialty.getDefaultProperties();
-            }
-            if (properties != null && properties.isDefined("set-lore")) {
-                lores.add("  - " + properties.getProperty("set-lore").getValue());
-            }
-        }
-
-        lores.add(ChatColor.AQUA.toString() + "Uses: " + finalUses + " / " + maxUses);
-
-        meta.setLore(lores);
-
         item.setItemMeta(meta);
+
+        applySpecialProperties(item);
 
         return finalUses <= 0;
     }
@@ -322,24 +306,9 @@ public class SpecialItems {
         // save uses
         container.set(specialtiesKey, PersistentDataType.TAG_CONTAINER, specialtyContainer);
 
-        // add specialties' lores
-        List<String> lores = new ArrayList<>();
-        for (Specialty enabledSpecialty : getSpecialties(item)) {
-            lores.add("Specialty: " + ChatColor.RESET.toString() + ChatColor.GOLD.toString() + enabledSpecialty.getLore());
-            SpecialtyProperties properties = getPropertiesFor(item, enabledSpecialty);
-            if (properties == null) {
-                properties = enabledSpecialty.getDefaultProperties();
-            }
-            if (properties.isDefined("set-lore")) {
-                lores.add("  - " + properties.getProperty("set-lore").getValue());
-            }
-        }
-
-        lores.add(ChatColor.AQUA.toString() + "Uses: " + uses + " / " + maxUses);
-
-        meta.setLore(lores);
-
         item.setItemMeta(meta);
+
+        applySpecialProperties(item);
     }
 
     public void makeUnstackable(ItemStack item) {

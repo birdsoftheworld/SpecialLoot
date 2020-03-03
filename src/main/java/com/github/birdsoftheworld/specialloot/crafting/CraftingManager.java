@@ -51,9 +51,6 @@ public class CraftingManager {
                 // set specialty
                 specialItems.setSpecialty(specialItem, specialty, true, specialty.getRecipeProperties(recipeString));
 
-                // apply properties (i.e. enchantment glint)
-                specialItems.applySpecialProperties(specialItem);
-
                 ShapedRecipe recipe = new ShapedRecipe(new NamespacedKey(plugin, specialty.getRecipeName(recipeString)), specialItem);
                 recipe.shape(recipeString[0], recipeString[1], recipeString[2]);
 
