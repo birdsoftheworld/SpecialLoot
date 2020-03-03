@@ -53,7 +53,7 @@ public class BowListener extends SpecialtyListener implements Listener {
                 BowSpecial bowSpecial = (BowSpecial) specialty;
                 properties.put(bowSpecial, specialItems.getPropertiesFor(bow, specialty));
 
-                boolean useDurability = bowSpecial.onFire(event, specialItems.getPropertiesFor(bow, specialty));
+                boolean useDurability = bowSpecial.onBowFire(event, specialItems.getPropertiesFor(bow, specialty));
                 if (useDurability) {
                     boolean itemBroke = use(bow, (Player) entity, specialItems, specialty);
                     if (itemBroke) {
@@ -84,7 +84,7 @@ public class BowListener extends SpecialtyListener implements Listener {
 
         HashMap<BowSpecial, SpecialtyProperties> specialties = activeProjectiles.get(projectile);
         for (BowSpecial specialty : specialties.keySet()) {
-            specialty.onProjectileHit(event, specialties.get(specialty));
+            specialty.onBowProjectileHit(event, specialties.get(specialty));
         }
     }
 

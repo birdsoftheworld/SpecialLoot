@@ -21,7 +21,7 @@ public class ExplodingBow extends Specialty implements BowSpecial {
     }
 
     @Override
-    public boolean onFire(EntityShootBowEvent event, SpecialtyProperties properties) {
+    public boolean onBowFire(EntityShootBowEvent event, SpecialtyProperties properties) {
         if (event.getProjectile() instanceof Arrow) {
             Arrow arrow = (Arrow) event.getProjectile();
             arrow.setColor(Color.RED);
@@ -30,7 +30,7 @@ public class ExplodingBow extends Specialty implements BowSpecial {
     }
 
     @Override
-    public void onProjectileHit(ProjectileHitEvent event, SpecialtyProperties properties) {
+    public void onBowProjectileHit(ProjectileHitEvent event, SpecialtyProperties properties) {
         Projectile projectile = event.getEntity();
         Location hitLocation = projectile.getLocation();
         World world = projectile.getWorld();

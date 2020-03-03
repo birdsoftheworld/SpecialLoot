@@ -14,6 +14,11 @@ consumable:
     glint: true
     config: "utility/KnockbackStick.yml"
 
+  BlockBomb:
+    lore: "Throw to fill an area in with blocks"
+    glint: true
+    config: "utility/BlockBomb.yml"
+
 tools:
   BigHole:
     lore: "Digs a big hole"

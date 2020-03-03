@@ -1,0 +1,13 @@
+max-uses: 1
+radius: 3
+block: "DIRT"
+
+recipes:
+  bomb-dirt:
+    rt: "ddd"
+    rm: "dgd"
+    rb: "ddd"
+    produces: "SNOWBALL"
+    set: "default"
+    d: "DIRT"
+    g: "GUNPOWDER"
