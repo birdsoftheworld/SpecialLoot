@@ -5,7 +5,7 @@ block: "DIRT"
 recipes:
   bomb-dirt:
     rt: "ddd"
-    rm: "dgd"
+    rm: "ggg"
     rb: "ddd"
     produces: "SNOWBALL"
     set: "default"
