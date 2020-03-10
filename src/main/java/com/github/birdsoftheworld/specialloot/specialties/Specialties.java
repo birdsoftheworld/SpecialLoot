@@ -1,6 +1,5 @@
 package com.github.birdsoftheworld.specialloot.specialties;
 
-import com.github.birdsoftheworld.specialloot.crafting.CraftingManager;
 import com.github.birdsoftheworld.specialloot.util.SpecialtyProperties;
 import com.github.birdsoftheworld.specialloot.util.SpecialtyProperty;
 import org.bukkit.Material;
